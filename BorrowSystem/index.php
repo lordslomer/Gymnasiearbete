@@ -9,34 +9,18 @@
 
 <body>
     <div id="Container">
-        <form>
-            <button onclick="DisplayBorrowBlock()">Låna</button>
-            <button onclick="DisplayReturnBlock()">Lämna</button>
-            <P Id="Borrow">Här Lånar Man</P>
-            <P Id="Return">Här lämnar Man</P>
+        <form class="ButtonSectionSelection">
+            <button class="BorrowSectionButton">Låna</button>
+            <button class="ReturnSectionButton">Lämna</button>
         </form>
-        <form>
-            <button></button>
+        <form style="display:none;">
+            <p>Vad Ska du låna ?</p>
+        </form>
+        <form style="display:none;">
+            <p>Vad ska du lämna !!!!!!!</p>
         </form>
     </div>
     <script>
-        function DisplayBorrowBlock() {
-            var BorrowBlock = document.getElementById("Borrow");
-            if (BorrowBlock.style.display === "none") {
-                BorrowBlock.style.display = "block";
-            } else {
-                BorrowBlock.style.display = "none";
-            }
-        }
-
-        function DisplayReturnBlock() {
-            var ReturnBlock = document.getElementById("Return");
-            if (ReturnBlock.style.display === "none") {
-                ReturnBlock.style.display = "block";
-            } else {
-                ReturnBlock.style.display = "none";
-            }
-        }
 
     </script>
 </body>

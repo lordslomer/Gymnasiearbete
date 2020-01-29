@@ -1,5 +1,40 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Arial Black", Gadget, sans-serif;
+}
+
 form {
     text-align: center;
     width: 25%;
+    height: 25%;
     margin: auto;
+    top: 37.5%;
+    left: 37.5%;
+    position: fixed;
+    background-color: #F1F1F1;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+.BorrowSectionButton,
+.ReturnSectionButton {
+    width: 37.5%;
+    height: 58.83871%;
+    font-family: "Arial Black", Gadget, sans-serif;
+    border: none;
+    font-size: 18px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.ButtonSectionSelection {
+    padding-top: 2.90625%;
+
+}
+
+.ButtonSectionSelection button:hover {
+    background-color: aqua;
 }
