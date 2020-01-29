@@ -15,10 +15,10 @@
         </div>
         <div class="StyledDiv UnwantedFormsAtBeginOne" id="BorrowSectionOne">
             <form style="width: 50%; margin-left: 25%;">
-                <p>Användarnamn : </p>
-                <input placeholder="User...">
+                <p>Kontonummer : </p>
+                <input autocomplete="off" placeholder="User...">
                 <p>Lösenord : </p>
-                <input type="password" Id="PassInput" placeholder="Pass...">
+                <input autocomplete="off" type="password" Id="PassInput" placeholder="Pass...">
                 <button Id="GoToBorrowSectionTwo">Fortsätt</button>
             </form>
             <button class="RewindButtons" onclick="DisplayBorrowSectionOne('0')">Tillbaka</button>
@@ -26,7 +26,7 @@
         <div class="StyledDiv UnwantedFormsAtBeginOne" id="ReturnSectionOne">
             <form>
                 <p>Skanna Boken Här : </p>
-                <input placeholder="Bok Koden...">
+                <input autocomplete="off" placeholder="Bok Koden...">
             </form>
             <button class="RewindButtons" onclick="DisplayReturnSectionOne('0')">Tillbaka</button>
         </div>
