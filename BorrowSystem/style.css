@@ -9,9 +9,10 @@ body {
 
 .StyledDiv {
     text-align: center;
-    width: 25%;
-    height: 25%;
-    margin: auto;
+    min-width: 25%;
+    min-height: 25%;
+    width: auto;
+    height: auto;
     top: 37.5%;
     left: 37.5%;
     position: fixed;
@@ -21,8 +22,11 @@ body {
 
 
 #ButtonSectionSelection button {
-    width: 37.5%;
-    height: 58.83871%;
+    min-width: 37.5%;
+    min-height: 37.5%;
+    padding: 2.5% 0px 2.5% 0px;
+    width: auto;
+    height: auto;
     font-family: "Arial Black", Gadget, sans-serif;
     border: none;
     font-size: 18px;
@@ -30,9 +34,9 @@ body {
 }
 
 #ButtonSectionSelection {
-    padding-top: 2.90625%;
-
+    padding-top: 4%
 }
+
 
 #Container button:hover {
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);

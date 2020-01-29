@@ -24,48 +24,58 @@
             <button class="RewindButtons" onclick="DisplayBorrowSectionOne('0')">Tillbaka</button>
         </div>
         <div class="StyledDiv UnwantedFormsAtBeginOne" id="ReturnSectionOne">
-            <form>
+            <div id="BookScanningForm">
                 <p>Skanna Boken Här : </p>
-                <input autocomplete="off" placeholder="Bok Koden...">
-            </form>
-            <button class="RewindButtons" onclick="DisplayReturnSectionOne('0')">Tillbaka</button>
+                <input id="ReturnBookCode" autocomplete="off" placeholder="Bok Koden...">
+                </form>
+                <button class="RewindButtons" onclick="DisplayReturnSectionOne('0')">Tillbaka</button>
+            </div>
         </div>
-    </div>
-    <script>
-        var IInput = document.getElementById("PassInput");
-        IInput.addEventListener("keyup", function(event) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                console.log("it worked");
-                document.getElementById("GoToBorrowSectionTwo").onclick;
-            }
-        });
+        <script>
+            var IInput = document.getElementById("ReturnBookCode");
+            IInput.addEventListener("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    var table = document.createElement("TABLE");
+                    table.setAttribute("id", "ScannedBooksTable")
+                    document.getElementById("BookScanningForm").appendChild(table);
+                    var TableRow = document.createElement("TR");
+                    TableRow.setAttribute("id", "ScannedBooksTableTr");
+                    table.appendChild(TableRow);
 
-        function DisplayBorrowSectionOne(NumValue) {
-            var BorrowSection = document.getElementById("BorrowSectionOne");
-            var x = document.getElementById("ButtonSectionSelection");
-            if (NumValue == 1) {
-                BorrowSection.style.display = "block";
-                x.style.display = "none";
-            } else {
-                BorrowSection.style.display = "none";
-                x.style.display = "block";
-            }
-        }
+                    var Tablecell = document.createElement("TD");
+                    TableRow.appendChild(Tablecell);
+                    var Text = document.createTextNode(IInput.innerHTML);
+                    Tablecell.appendChild(Text);
 
-        function DisplayReturnSectionOne(NumValue) {
-            var ReturnSection = document.getElementById("ReturnSectionOne");
-            var x = document.getElementById("ButtonSectionSelection");
-            if (NumValue == 1) {
-                ReturnSection.style.display = "block";
-                x.style.display = "none";
-            } else {
-                ReturnSection.style.display = "none";
-                x.style.display = "block";
-            }
-        }
+                }
+            });
 
-    </script>
+            function DisplayBorrowSectionOne(NumValue) {
+                var BorrowSection = document.getElementById("BorrowSectionOne");
+                var x = document.getElementById("ButtonSectionSelection");
+                if (NumValue == 1) {
+                    BorrowSection.style.display = "block";
+                    x.style.display = "none";
+                } else {
+                    BorrowSection.style.display = "none";
+                    x.style.display = "block";
+                }
+            }
+
+            function DisplayReturnSectionOne(NumValue) {
+                var ReturnSection = document.getElementById("ReturnSectionOne");
+                var x = document.getElementById("ButtonSectionSelection");
+                if (NumValue == 1) {
+                    ReturnSection.style.display = "block";
+                    x.style.display = "none";
+                } else {
+                    ReturnSection.style.display = "none";
+                    x.style.display = "block";
+                }
+            }
+
+        </script>
 </body>
 
 </html>
