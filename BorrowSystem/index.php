@@ -26,7 +26,7 @@
         <div class="StyledDiv UnwantedFormsAtBeginOne" id="ReturnSectionOne">
             <div id="BookScanningForm">
                 <p>Skanna Boken Här : </p>
-                <input id="ReturnBookCode" autocomplete="off" placeholder="Bok Koden...">
+                <input type="number" id="ReturnBookCode" autocomplete="off" placeholder="Bok Koden...">
             </div>
             <button class="RewindButtons" onclick="DisplayReturnSectionOne('0')">Tillbaka</button>
         </div>
@@ -43,6 +43,8 @@
                     document.getElementById("BookScanningForm").appendChild(newBookScanned);
 
                     IInput.value = "";
+                    var digits = Math.floor(Math.random() * 9000000000) + 1000000000;
+                    console.log(digits);
                 }
             });
 
