@@ -44,6 +44,7 @@ body {
 
 .UnwantedFormsAtBeginOne {
     display: none;
+    padding: 1.6% 0px 2.4%;
 }
 
 .UnwantedFormsAtBeginOne button {
@@ -60,10 +61,6 @@ body {
 
 .UnwantedFormsAtBeginOne p {
     margin: 0;
-}
-
-.UnwantedFormsAtBeginOne {
-    padding-top: 1.6%;
 }
 
 .RewindButtons {

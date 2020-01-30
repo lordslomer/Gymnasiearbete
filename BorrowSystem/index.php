@@ -27,27 +27,22 @@
             <div id="BookScanningForm">
                 <p>Skanna Boken Här : </p>
                 <input id="ReturnBookCode" autocomplete="off" placeholder="Bok Koden...">
-                </form>
-                <button class="RewindButtons" onclick="DisplayReturnSectionOne('0')">Tillbaka</button>
             </div>
+            <button class="RewindButtons" onclick="DisplayReturnSectionOne('0')">Tillbaka</button>
         </div>
         <script>
             var IInput = document.getElementById("ReturnBookCode");
             IInput.addEventListener("keyup", function(event) {
                 if (event.keyCode === 13) {
-                    event.preventDefault();
-                    var table = document.createElement("TABLE");
-                    table.setAttribute("id", "ScannedBooksTable")
-                    document.getElementById("BookScanningForm").appendChild(table);
-                    var TableRow = document.createElement("TR");
-                    TableRow.setAttribute("id", "ScannedBooksTableTr");
-                    table.appendChild(TableRow);
+                    event.preventDefault();;
 
-                    var Tablecell = document.createElement("TD");
-                    TableRow.appendChild(Tablecell);
-                    var Text = document.createTextNode(IInput.innerHTML);
-                    Tablecell.appendChild(Text);
+                    var newBookScanned = document.createElement("DIV");
+                    newBookScanned.setAttribute("style", "text-align: left; padding-left: 10%; margin : 2%;");
 
+                    newBookScanned.innerHTML = IInput.value;
+                    document.getElementById("BookScanningForm").appendChild(newBookScanned);
+
+                    IInput.value = "";
                 }
             });
 
