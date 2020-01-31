@@ -9,6 +9,23 @@
 
 <body>
     <div id="Container">
+        <?php 
+                            include_once "db/connect.php";
+                            
+                            $sql = "SELECT BookID FROM arkiv";
+                            $result = mysqli_query($con, $sql);
+                            $resultAmount = mysqli_num_rows($result);
+                        
+                            if($resultAmount > 0){
+                                echo '<table id="BookIDtable" style="display:none;">';
+                                while($rows = mysqli_fetch_assoc($result)){
+                                    
+                                    echo "<tr><td>".$rows['BookID']."</td></tr>";
+                                }  
+                                echo"</table>";
+                            }
+                            
+        ?>
         <div class="StyledDiv" id="ButtonSectionSelection">
             <button onclick="DisplayBorrowSectionOne('1')">Låna</button>
             <button onclick="DisplayReturnSectionOne('1')">Lämna</button>
@@ -35,16 +52,31 @@
             IInput.addEventListener("keyup", function(event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();;
+                    if (IInput.value === "") {
 
-                    var newBookScanned = document.createElement("DIV");
-                    newBookScanned.setAttribute("style", "text-align: left; padding-left: 10%; margin : 2%;");
+                    } else {
 
-                    newBookScanned.innerHTML = IInput.value;
-                    document.getElementById("BookScanningForm").appendChild(newBookScanned);
+                        //make a new div, place it inside the Bookscanningform and style it. 
+                        var newBookScanned = document.createElement("DIV");
+                        newBookScanned.setAttribute("style", "text-align: left; padding-left: 10%; margin : 2%;");
+                        document.getElementById("BookScanningForm").appendChild(newBookScanned);
 
-                    IInput.value = "";
-                    var digits = Math.floor(Math.random() * 9000000000) + 1000000000;
-                    console.log(digits);
+                        //Get the search results from the BookIdTable.
+                        var BookIdTable = document.getElementById("BookIDtable");
+                        if (typeof(BookIdTable) != "undefind" && BookIdTable != null) {
+                            console.log(BookIdTable.getElementsByTagName("tr")[0].innerHTML);
+
+                        } else {
+                            alert("Results not found!");
+                        }
+
+                        //Give the div a Value, then clear the input field. 
+                        newBookScanned.innerHTML = IInput.value;
+                        IInput.value = "";
+
+
+                        var digits = Math.floor(Math.random() * 9000000000) + 1000000000;
+                    }
                 }
             });
 
