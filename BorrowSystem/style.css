@@ -15,7 +15,8 @@ body {
     height: auto;
     top: 37.5%;
     left: 37.5%;
-    position: fixed;
+    position: absolute;
+    margin-bottom: 5%;
     background-color: #F1F1F1;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -44,7 +45,7 @@ body {
 
 .UnwantedFormsAtBeginOne {
     display: none;
-    padding: 1.6% 0px 2.4%;
+    padding: 1.6% 0px 2.8%;
 }
 
 .UnwantedFormsAtBeginOne button {
@@ -67,4 +68,10 @@ body {
     position: absolute;
     left: 0px;
     bottom: 0px;
+}
+
+#ReturnBookCode::-webkit-outer-spin-button,
+#ReturnBookCode::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

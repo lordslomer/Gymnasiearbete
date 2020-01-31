@@ -64,14 +64,22 @@
                         //Get the search results from the BookIdTable.
                         var BookIdTable = document.getElementById("BookIDtable");
                         if (typeof(BookIdTable) != "undefind" && BookIdTable != null) {
-                            console.log(BookIdTable.getElementsByTagName("tr")[0].innerHTML);
 
+                            var ResultFoundTex = "No Book was found with that id";
+                            for (var i = 0; i < <?php echo $resultAmount?>; i++) {
+                                if (IInput.value === BookIdTable.getElementsByTagName("tr")[i].getElementsByTagName("td")[0].innerHTML) {
+                                    ResultFoundTex = "A Book with this ID was found : " + BookIdTable.getElementsByTagName("tr")[i].getElementsByTagName("td")[0].innerHTML;
+                                } else {
+                                    newBookScanned.setAttribute("id", "NoBookIDFound");
+                                    newBookScanned.innerHTML = ResultFoundTex;
+                                }
+                            }
                         } else {
-                            alert("Results not found!");
+                            alert("Table not found!");
                         }
 
                         //Give the div a Value, then clear the input field. 
-                        newBookScanned.innerHTML = IInput.value;
+
                         IInput.value = "";
 
 
