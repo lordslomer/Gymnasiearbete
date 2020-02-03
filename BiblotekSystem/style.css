@@ -1,0 +1,87 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.Container {
+    grid-column: 2/5;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    padding: 10px;
+}
+
+.SearchBox {
+    grid-column: 2/10;
+    grid-row: 3/8;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.SubSearchBox {
+    grid-column: 1/5;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: grid;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.SubSearchBox form {
+    grid-row: 2/3;
+    justify-self: center;
+    align-self: center;
+    padding-left: 5px;
+}
+
+.SubSearchBox input {
+    max-width: 65%;
+    border: 1px solid #b2b2b2;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 0px 5px 0px;
+}
+
+.LoginBox {
+    grid-column: 9/11;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    min-height: 56px;
+    padding: 10px;
+}
+
+.SearchBox h1 {
+    grid-column: 3/4;
+    justify-self: center;
+    align-self: end;
+}
+
+.SearchBox form {
+    grid-area: 2/2/4/5;
+    align-self: center;
+    text-align: center;
+}
+
+.SearchBox input {
+    max-width: 75%;
+    border: 1px solid #b2b2b2;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 0px 5px 0px;
+}
+
+.StyledSpans {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 5px;
+    margin: 5px;
+}
