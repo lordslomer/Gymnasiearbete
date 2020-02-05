@@ -1,3 +1,16 @@
+<?php
+    session_start();
+    if(isset($_SESSION['Isloggedin'])){
+        echo $_SESSION['Isloggedin'];
+    }
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+}
+    require'includes/db.inc.php';
+?>
 <!DOCTYPE html>
 <html>
 
