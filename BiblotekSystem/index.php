@@ -69,7 +69,7 @@
     align-self: center;">Logga in</h1>
             <form class="LoginForm" action="includes/login.inc.php" method="post">
                 <span style="grid-area: 1/1/2/3; font-size: 16px; justify-self: center; align-self: center;">
-                    Du kan använda epostadress eller användarnamn för att logga in</span>
+                    Du kan använda epostadress eller användarnamn för att logga in.</span>
                 <input type="text" autocomplete="off" style="grid-area: 2/1/3/3;" placeholder="Användarnamn Eller E-mail....">
                 <input type="password" autocomplete="off" style="grid-area: 3/1/4/3;" placeholder="Lösenord....">
             </form>
@@ -84,9 +84,21 @@
         echo '<div class="LoginBox">
         <div>
             <a href="profile.php"><button class="Buttons">Min profil</button></a>
-            <a href="includes/logout.inc.php?logginout"><button class="Buttons">Loggga ut</button></a>
+            <button onclick="LoginModalDisplay(1)" class="Buttons">Loggga ut</button>
         </div>
-    </div>';
+    </div>
+    
+    <div class="Modal" style="background-color: rgba(0, 0, 0, 0.4); grid-template-rows: repeat(3,1fr);">
+        <span  style="grid-area: 2/2/3/3; align-self: start; justify-self: end; margin-right: 13%;
+    margin-top: 5%;" class="CloseModalX" onclick="LoginModalDisplay(0)">&times;</span>
+        <div class="ModalContent" style="grid-area: 2/2/3/3; grid-template: repeat(2, 1fr) / repeat(2, 1fr); grid-gap:0px; grid-column-gap: 50px; grid-row-gap: 20px; justify-self: center; align-self: center; padding: 20px;">
+            <span style="grid-area: 1/1/2/3; justify-self:center; align-self: end;">Är du säker du vill logga ut ?</span>
+            <button style="grid-area: 2/2/3/3; justify-self:start; align-self: start;" class="Buttons" onclick="LoginModalDisplay(0)">Avbryt</button>
+            <a href="includes/logout.inc.php?logginout" style="grid-area: 2/1/3/2; justify-self:end; align-self: start;"><button type="submit" class="Buttons">Logga ut</button></a>
+        </div>
+    </div>
+    
+    ';
     }
     ?>
 
@@ -95,20 +107,6 @@
 
 </div>
 
-<script>
-    function LoginModalDisplay(NumValue) {
-        if (NumValue > 0) {
-            document.getElementsByClassName("Modal")[0].style.display = "grid";
-        } else {
-            document.getElementsByClassName("Modal")[0].style.display = "none";
-        }
-    }
-
-    function SubmitLoginForm() {
-        document.getElementsByClassName("LoginForm")[0].submit();
-    }
-
-</script>
 
 <?php
     require'footer.php';

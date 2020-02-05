@@ -1,8 +1,6 @@
 <?php
     session_start();
-    if(isset($_SESSION['Isloggedin'])){
-        echo $_SESSION['Isloggedin'];
-    }
+    
     function test_input($data) {
         $data = trim($data);
         $data = stripslashes($data);

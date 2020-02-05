@@ -2,11 +2,11 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST"){
         session_start();
         $_SESSION['Isloggedin'] = 'true';
-        header('location: ../profile.php?');
+        echo '<script>history.back(-1)</script>';
         exit;
     }
     else{
-        header('location: ../index.php?Dont do that.....');
+        header('location: ../index.php?');
         exit;
     }
 ?>
