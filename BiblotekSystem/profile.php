@@ -1,12 +1,12 @@
 <?php
     require 'header.php';
     if(!isset($_SESSION['Isloggedin'])){
-        header('location: index.php?Loginfirst.....');
+        header('location: index.php?Login with password first.....');
         exit;
     }
 ?>
 
-<div id="Container" style="grid-template-rows: repeat(4, 1fr);">
+<div id="Container" style="grid-template-rows: repeat(7, 1fr);">
 
     <button class="Buttons" style="grid-column: 1/3; grid-row: 1/2; justify-self: center;
     align-self: center; text-decoration: none;" onclick="history.back(-1)">&laquo; Tillbaka</button>
@@ -48,7 +48,66 @@
         </div>
     </div>
 
-</div>
-<?php
+    <!-- Functions of the profile page-->
+    <div class="FunctionsBox">
+        <button class="Buttons" onclick="DisplayFunctionBoxes(0)" style="grid-area: 1/1/2/2;">Mina Utlån</button>
+        <button class="Buttons" onclick="DisplayFunctionBoxes(2)" style="grid-area: 1/3/2/4;">Redigera Arkivet</button>
+        <button class="Buttons" onclick="DisplayFunctionBoxes(1)" style="grid-area: 1/2/2/3;">Redigera Utlån</button>
+        <button class="Buttons" onclick="DisplayFunctionBoxes(3)" style="grid-area: 1/4/2/5;">Redigera AnvändaKonto</button>
+
+        <div class="FuntionBox">HERE IS Funtion 1</div>
+
+        <div class="FuntionBox">HERE IS Funtion 2</div>
+
+        <div class="FuntionBox">HERE IS Funtion 3</div>
+
+        <div class="FuntionBox">
+            <form class="SingupForm">
+                <span style="grid-area: 1/1/2/3;">
+                    <p style="font-size: 24px;">Lägg till användare</p>
+                    <p style="font-size: 16px; font-weight: none;">Välj användare från tablen för att rediagre eller radera användarens Info.</p>
+                </span>
+                <span style="grid-area: 2/1/3/3">
+                    <p>Förenamn</p>
+                    <input autocomplete="off" name="Fname" type="text">
+                </span>
+                <span style="grid-area: 3/1/4/3;">
+                    <p>Efternamn</p>
+                    <input autocomplete="off" name="Lname" type="text">
+                </span>
+                <span style="grid-area: 4/1/5/3;">
+                    <p>Epostadress</p>
+                    <input autocomplete="off" name="Email" type="email">
+                </span>
+                <span style="grid-area: 5/1/6/3;">
+                    <p>Lösenord</p>
+                    <input autocomplete="off" name="Pwd" type="password">
+                </span>
+                <span style="grid-area: 6/1/7/3; font-size: 16px; font-weight: none;">
+                    <p style="font-size: 22px;">Typ av användare</p>
+                    <input autocomplete="off" name="Type" type="radio" value="Admin">
+                    Administratör
+                    <input autocomplete="off" name="Type" type="radio" value="nonAdmin">
+                    Elev
+                </span>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function DisplayFunctionBoxes(NumValue) {
+            var FunctionBoxes = document.getElementsByClassName("FuntionBox");
+            for (var i = 0; i < FunctionBoxes.length; i++) {
+                if (NumValue === i) {
+                    FunctionBoxes[i].style.display = "grid";
+                } else {
+                    FunctionBoxes[i].style.display = "none";
+                }
+            }
+        }
+
+    </script>
+
+    <?php
     require 'footer.php';
 ?>

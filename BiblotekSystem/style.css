@@ -200,3 +200,40 @@ span {
     padding: 5px 25px;
     background-color: white;
 }
+
+.FunctionsBox {
+    grid-area: 3/1/8/11;
+    display: grid;
+    grid-template: 1fr 2fr 2fr / repeat(4, 1fr);
+    grid-gap: 5px;
+    padding: 5px;
+}
+
+.FunctionsBox button:focus {
+    background-color: white;
+    color: black;
+    outline: none !important;
+    border-bottom: 5px solid black;
+}
+
+.FuntionBox {
+    display: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-top: 5px solid black;
+    grid-area: 2/1/5/5;
+    grid-template-columns: 1fr 2fr;
+}
+
+.SingupForm span {
+    text-align: center;
+}
+
+.SingupForm {
+    display: grid;
+    grid-template: repeat(6, 1fr) / repeat(2, 1fr);
+    padding: 5px;
+}
+
+span p {
+    font-weight: bold;
+}
