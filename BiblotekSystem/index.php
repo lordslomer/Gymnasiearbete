@@ -70,7 +70,7 @@
             <form class="LoginForm" action="includes/login.inc.php" method="post">
                 <span style="grid-area: 1/1/2/3; font-size: 16px; justify-self: center; align-self: center;">
                     Du kan använda epostadress eller användarnamn för att logga in.</span>
-                <input type="text" autocomplete="off" style="grid-area: 2/1/3/3;" placeholder="Användarnamn Eller E-mail....">
+                <input type="text" name="UserEmail"autocomplete="off" style="grid-area: 2/1/3/3;" placeholder="Användarnamn Eller E-mail....">
                 <input type="password" autocomplete="off" style="grid-area: 3/1/4/3;" placeholder="Lösenord....">
             </form>
             <button style="grid-area: 4/1/5/2;" class="Buttons" onclick="LoginModalDisplay(0)">Cancel</button>
@@ -94,7 +94,7 @@
         <div class="ModalContent" style="grid-area: 2/2/3/3; grid-template: repeat(2, 1fr) / repeat(2, 1fr); grid-gap:0px; grid-column-gap: 50px; grid-row-gap: 20px; justify-self: center; align-self: center; padding: 20px;">
             <span style="grid-area: 1/1/2/3; justify-self:center; align-self: end;">Är du säker du vill logga ut ?</span>
             <button style="grid-area: 2/2/3/3; justify-self:start; align-self: start;" class="Buttons" onclick="LoginModalDisplay(0)">Avbryt</button>
-            <a href="includes/logout.inc.php?logginout" style="grid-area: 2/1/3/2; justify-self:end; align-self: start;"><button type="submit" class="Buttons">Logga ut</button></a>
+            <form action="includes/logout.inc.php" method="post" style="grid-area: 2/1/3/2; justify-self:end; align-self: start;"><input type="submit" name="LogoutSubmit" class="Buttons" value="Logga ut"></form>
         </div>
     </div>
     

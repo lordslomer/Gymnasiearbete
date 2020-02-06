@@ -1,6 +1,11 @@
 <?php
     session_start();
-
+    if(isset($_SESSION['Isloggedin'])){
+        echo 'Logged in is = '.$_SESSION['Isloggedin'];
+    }
+else{
+        echo 'Logged in is = false';
+}
     function test_input($data) {
         $data = trim($data);
         $data = stripslashes($data);

@@ -1,5 +1,5 @@
 <?php 
-if(isset($_GET['logginout'])){
+if(isset($_POST['LogoutSubmit'])){
     session_start();
     session_unset();
     session_destroy();

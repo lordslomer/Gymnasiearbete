@@ -1,12 +1,12 @@
 <?php
     require 'header.php';
     if(!isset($_SESSION['Isloggedin'])){
-        header('location: index.php?Login with password first.....');
+        header('location: index.php?');
         exit;
     }
 ?>
 
-<div id="Container" style="grid-template-rows: repeat(7, 1fr);">
+<div id="Container" style="grid-template-rows: repeat(8, 1fr);">
 
     <button class="Buttons" style="grid-column: 1/3; grid-row: 1/2; justify-self: center;
     align-self: center; text-decoration: none;" onclick="history.back(-1)">&laquo; Tillbaka</button>
@@ -32,7 +32,7 @@
         <div class="ModalContent" style="grid-area: 2/2/3/3; grid-template: repeat(2, 1fr) / repeat(2, 1fr); grid-gap:0px; grid-column-gap: 50px; grid-row-gap: 20px; justify-self: center; align-self: center; padding: 20px;">
             <span style="grid-area: 1/1/2/3; justify-self:center; align-self: end;">Är du säker du vill logga ut ?</span>
             <button style="grid-area: 2/2/3/3; justify-self:start; align-self: start;" class="Buttons" onclick="LoginModalDisplay(0)">Avbryt</button>
-            <a href="includes/logout.inc.php?logginout" style="grid-area: 2/1/3/2; justify-self:end; align-self: start;"><button type="submit" class="Buttons">Logga ut</button></a>
+            <form action="includes/logout.inc.php" method="post" style="grid-area: 2/1/3/2; justify-self:end; align-self: start;"><input type="submit" name="LogoutSubmit" class="Buttons" value="Logga ut"></form>
         </div>
     </div>
 
@@ -69,26 +69,31 @@
                 </span>
                 <span style="grid-area: 2/1/3/3">
                     <p>Förenamn</p>
-                    <input autocomplete="off" name="Fname" type="text">
+                    <input class="SingupFormInput" autocomplete="off" name="Fname" type="text" placeholder="Förenamn">
                 </span>
                 <span style="grid-area: 3/1/4/3;">
                     <p>Efternamn</p>
-                    <input autocomplete="off" name="Lname" type="text">
+                    <input class="SingupFormInput" autocomplete="off" name="Lname" type="text" placeholder="Efternamn">
                 </span>
                 <span style="grid-area: 4/1/5/3;">
                     <p>Epostadress</p>
-                    <input autocomplete="off" name="Email" type="email">
+                    <input class="SingupFormInput" autocomplete="off" name="Email" type="email" placeholder="Email">
                 </span>
                 <span style="grid-area: 5/1/6/3;">
                     <p>Lösenord</p>
-                    <input autocomplete="off" name="Pwd" type="password">
+                    <input class="SingupFormInput" autocomplete="off" name="Pwd" type="password" placeholder="Password">
                 </span>
                 <span style="grid-area: 6/1/7/3; font-size: 16px; font-weight: none;">
                     <p style="font-size: 22px;">Typ av användare</p>
                     <input autocomplete="off" name="Type" type="radio" value="Admin">
-                    Administratör
+                    <span>Administratör</span>
                     <input autocomplete="off" name="Type" type="radio" value="nonAdmin">
-                    Elev
+                    <span>Elev</span>
+                </span>
+                <span style="grid-area: 7/1/8/3;">
+                    <button class="Buttons">Lägg till</button>
+                    <button class="Buttons">Rediagre</button>
+                    <button class="Buttons">Radera</button>
                 </span>
             </form>
         </div>
