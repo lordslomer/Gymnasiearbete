@@ -1,9 +1,12 @@
 <?php
     require 'header.php';
     if(!isset($_SESSION['Isloggedin'])){
+        
         header('location: index.php?');
-        exit;
+        exit();
+        
     }
+     
 ?>
 
 <div id="Container" style="grid-template-rows: repeat(8, 1fr);">
@@ -14,7 +17,7 @@
     <div class="SubSearchBox">
         <form action="index.php" method="get">
             <span>Sök:</span>
-            <input autocomplete="off" name="Searched" type="search" size="40">
+            <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
             <button type="submit" class="Buttons searchbutton">Go</button>
         </form>
     </div>
@@ -22,7 +25,7 @@
 
     <div class="LoginBox">
         <div style="grid-template-columns: 1fr;">
-            <button onclick="LoginModalDisplay(1)" class="Buttons">Loggga ut</button>
+            <button onclick="LoginModalDisplay(1)" class="Buttons">Logga ut</button>
         </div>
     </div>
 
@@ -61,58 +64,205 @@
 
         <div class="FuntionBox">HERE IS Funtion 3</div>
 
-        <div class="FuntionBox">
-            <form class="SingupForm">
+        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus'])){echo 'style="display:grid;"';}?>>
+
+            <form class="SingupForm" method="post" action="includes/users.inc.php">
                 <span style="grid-area: 1/1/2/3;">
                     <p style="font-size: 24px;">Lägg till användare</p>
-                    <p style="font-size: 16px; font-weight: none;">Välj användare från tablen för att rediagre eller radera användarens Info.</p>
+                    <p style="font-size: 14px; font-weight: none;">Välj användare från tablen för att rediagre eller radera användarens Info.</p>
                 </span>
-                <span style="grid-area: 2/1/3/3">
+                <?php 
+                    
+                        if(isset($_GET['signupaddstatus'])){
+                            if(is_array($_GET['signupaddstatus'])){
+                                for ($i = 0; $i < count($_GET['signupaddstatus']); $i++){
+                                    
+                                    if($_GET['signupaddstatus'][$i] == 'invalidFname'){
+                                        $FnameError = 'Bara bokstäver i Förnamnet';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidLname'){
+                                        $LnameError = 'Bara bokstäver i Efternamnet';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidEmail'){
+                                        $EmailEroor = 'Ogiltig Epostadress';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidPwd'){
+                                        echo '<p class="errors2">Pin-koden måste vara 6-siffrig</p>';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidType'){
+                                        echo '<p class="errors2">Ogiltig Konto typ</p>';
+                                    }
+                                }
+                            }else{
+                                if($_GET['signupaddstatus'] == 'success'){
+                                    echo '<p class="errors2" style="color:green;">Användaren har lagts till</p>'; 
+                                }else{
+                                    switch ($_GET['signupaddstatus']){
+                                        case 'emailtaken':
+                                            echo '<p class="errors2">Epostadress redan tagen !</p>';
+                                            break;
+                                        case 'emptyfields':
+                                            echo '<p class="errors2">Fyll i allt !</p>';
+                                            break;
+                                        case 'invalidFname':
+                                            echo '<p class="errors2">Bara bokstäver i Förnamnet !</p>';
+                                            $FnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidLname':
+                                            echo '<p class="errors2">Bara bokstäver i Efternamnet !</p>';
+                                            $LnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidEmail':
+                                            echo '<p class="errors2">Ogiltig Epostadress !</p>';
+                                            $EmailEroor = 'Fel Format';
+                                            break;
+                                        case 'invalidPwd':
+                                            echo '<p class="errors2">Pin-koden måste vara 6-siffrig !</p>';
+                                            break;
+                                        case 'invalidType':
+                                            echo '<p class="errors2">Ogiltig Konto typ !</p>';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        } 
+                    
+                    ?>
+                <span style="grid-area: 2/1/3/3; justify-self:center; align-self:end;">
                     <p>Förenamn</p>
-                    <input class="SingupFormInput" autocomplete="off" name="Fname" type="text" placeholder="Förenamn">
+                    <input class="Inputs" autocomplete="off" name="Fname" type="text" value="<?php
+                    if(isset($FnameError)){
+                        echo $FnameError.'" style="color:red;';
+                    }else if(isset($_GET['Fname'])){echo $_GET['Fname'];}?>" onclick="InputColorWhite(event)" placeholder="Förenamn" onkeypress="return /[a-zA-Z]/i.test(event.key)" required>
                 </span>
-                <span style="grid-area: 3/1/4/3;">
+                <span style="grid-area: 3/1/4/3; justify-self:center; align-self:end;">
                     <p>Efternamn</p>
-                    <input class="SingupFormInput" autocomplete="off" name="Lname" type="text" placeholder="Efternamn">
+                    <input class="Inputs" autocomplete="off" name="Lname" type="text" value="<?php
+                    if(isset($LnameError)){
+                        echo $LnameError.'" style="color:red;';
+                    }else if(isset($_GET['Lname'])){echo $_GET['Lname'];}?>" onclick="InputColorWhite(event)" placeholder="Efternamn" onkeypress="return /[a-zA-Z]/i.test(event.key)" required>
                 </span>
-                <span style="grid-area: 4/1/5/3;">
+                <span style="grid-area: 4/1/5/3; justify-self:center; align-self:end;">
                     <p>Epostadress</p>
-                    <input class="SingupFormInput" autocomplete="off" name="Email" type="email" placeholder="Email">
+                    <input class="Inputs" autocomplete="off" name="Email" type="email" value="<?php
+                    if(isset($EmailEroor)){
+                        echo $EmailEroor.'" style="color:red;';
+                    }else if(isset($_GET['Email'])){echo $_GET['Email'];}?>" onclick="InputColorWhite(event)" placeholder="Email@example.com" required>
                 </span>
-                <span style="grid-area: 5/1/6/3;">
-                    <p>Lösenord</p>
-                    <input class="SingupFormInput" autocomplete="off" name="Pwd" type="password" placeholder="Password">
+                <span style="grid-area: 5/1/6/3; justify-self:center; align-self:end;">
+                    <p>6-siffrig Pin-kod</p>
+                    <input class="Inputs pinCode" autocomplete="off" name="Pwd" type="password" maxlength="6" placeholder="XX-XX-XX" onkeypress="return /[0-9]/i.test(event.key)" required>
                 </span>
-                <span style="grid-area: 6/1/7/3; font-size: 16px; font-weight: none;">
+                <?php 
+                    
+                        if(isset($_GET['signupaddstatus'])){
+                            if(is_array($_GET['signupaddstatus'])){
+                                for ($i = 0; $i < count($_GET['signupaddstatus']); $i++){
+                                    
+                                    if($_GET['signupaddstatus'][$i] == 'invalidFname'){
+                                        $FnameError = 'Inga mellanrum i Förnamnet';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidLname'){
+                                        $LnameError = 'Inga mellanrum i Efternamnet';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidEmail'){
+                                        $EmailEroor = 'Ogiltig Epostadress';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidPwd'){
+                                        echo '<p class="errors1">Pin-koden måste vara 6-siffrig</p>';
+                                    }
+                                    else if($_GET['signupaddstatus'][$i] == 'invalidType'){
+                                        echo '<p class="errors1">Ogiltig Konto typ</p>';
+                                    }
+                                }
+                            }else{
+                                if($_GET['signupaddstatus'] == 'success'){
+                                    echo '<p class="errors1" style="color:green;">Användaren har lagts till</p>'; 
+                                }else{
+                                    switch ($_GET['signupaddstatus']){
+                                        case 'emptyfields':
+                                            echo '<p class="errors1">Fyll i allt !</p>';
+                                            break;
+                                        case 'invalidFname':
+                                            echo '<p class="errors1">Inga mellanrum i Förnamnet !</p>';
+                                            $FnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidLname':
+                                            echo '<p class="errors1">Inga mellanrum i Efternamnet !</p>';
+                                            $LnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidEmail':
+                                            echo '<p class="errors1">Ogiltig Epostadress !</p>';
+                                            $EmailEroor = 'Fel Format';
+                                            break;
+                                        case 'invalidPwd':
+                                            echo '<p class="errors1">Pin-koden måste vara 6-siffrig !</p>';
+                                            break;
+                                        case 'invalidType':
+                                            echo '<p class="errors1">Ogiltig Konto typ !</p>';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        } 
+                    
+                    ?>
+                <span style="grid-area: 6/1/7/3; font-size: 16px; font-weight: none; justify-self:center; align-self:end">
                     <p style="font-size: 22px;">Typ av användare</p>
-                    <input autocomplete="off" name="Type" type="radio" value="Admin">
+                    <input autocomplete="off" name="Type" type="radio" <?php if(isset($_GET['Type']) && $_GET['Type'] == 'Admin'){ echo 'checked';} ?> value="Admin">
                     <span>Administratör</span>
-                    <input autocomplete="off" name="Type" type="radio" value="nonAdmin">
+                    <input autocomplete="off" pattern="[0-9]" <?php if(isset($_GET['Type'])){
+        if($_GET['Type'] != 'Admin'){
+    echo 'checked';
+        }
+    }else{
+    echo 'checked';
+    } ?> name="Type" type="radio" value="nonAdmin">
                     <span>Elev</span>
                 </span>
-                <span style="grid-area: 7/1/8/3;">
-                    <button class="Buttons">Lägg till</button>
-                    <button class="Buttons">Rediagre</button>
-                    <button class="Buttons">Radera</button>
+                <span style="grid-area: 7/1/8/3; justify-self:center; align-self:center">
+                    <input type="submit" name="userAdd" class="Buttons" value="Lägg till">
+                    <input type="submit" name="userEdit" class="Buttons" value="Rediagre">
+                    <input type="submit" name="userDelete" class="Buttons" value="Radera">
                 </span>
             </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+
         </div>
+
     </div>
 
-    <script>
-        function DisplayFunctionBoxes(NumValue) {
-            var FunctionBoxes = document.getElementsByClassName("FuntionBox");
-            for (var i = 0; i < FunctionBoxes.length; i++) {
-                if (NumValue === i) {
-                    FunctionBoxes[i].style.display = "grid";
-                } else {
-                    FunctionBoxes[i].style.display = "none";
-                }
+</div>
+
+<script>
+    function InputColorWhite(event) {
+        event.target.style.color = "black";
+    }
+
+    function DisplayFunctionBoxes(NumValue) {
+        var FunctionBoxes = document.getElementsByClassName("FuntionBox");
+        for (var i = 0; i < FunctionBoxes.length; i++) {
+            if (NumValue === i) {
+                FunctionBoxes[i].style.display = "grid";
+            } else {
+                FunctionBoxes[i].style.display = "none";
             }
         }
+    }
 
-    </script>
+</script>
 
-    <?php
+<?php
     require 'footer.php';
 ?>

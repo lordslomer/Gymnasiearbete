@@ -4,9 +4,9 @@ if(isset($_POST['LogoutSubmit'])){
     session_unset();
     session_destroy();
     echo '<script>history.back(-1)</script>';
-    exit;
+    exit();
 }
 else {
-    header("Location: ../index.php?tryed loggin out without the button");
-    exit;
+    http_response_code(404);
+    exit();
 }

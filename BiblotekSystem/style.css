@@ -63,12 +63,8 @@ body {
 .SubSearchBox input {
     max-width: 65%;
     min-height: 28px;
-    border: 1px solid #b2b2b2;
     font-size: 18px;
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin: 5px 10px 5px 5px;
-    background-color: white;
+    margin: 0px 5px 0px 10px;
 }
 
 .SearchBox h1 {
@@ -83,16 +79,31 @@ body {
     text-align: center;
 }
 
+.Inputs {
+    min-height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    line-height: normal;
+    padding: 5px 25px;
+    background-color: white;
+    border: 3px solid white;
+    border-radius: 3px;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+.Inputs:focus {
+    border: 3px solid #555;
+}
+
 .SearchBox input {
     max-width: 65%;
     min-height: 30px;
-    border: 1px solid #b2b2b2;
     font-size: 18px;
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin: 0px 10px 0px;
-    line-height: normal;
-    background-color: white;
 }
 
 .Buttons {
@@ -152,8 +163,7 @@ span {
     top: 0px;
     width: 100%;
     height: 100%;
-    /*background-color: rgba(0, 0, 0, 0.4);*/
-    background-color: white;
+    background-color: rgba(0, 0, 0, 0.4);
     grid-template: repeat(4, 1fr) / repeat(3, 1fr);
 }
 
@@ -170,9 +180,11 @@ span {
 
 .CloseModalX {
     font-size: 34px;
-    grid-area: 1/3/2/4;
-    align-self: end;
-    justify-self: start;
+    grid-area: 2/2/3/3;
+    align-self: start;
+    justify-self: end;
+    margin-right: 10px;
+    z-index: 1;
 }
 
 .CloseModalX:hover,
@@ -189,16 +201,8 @@ span {
 }
 
 .LoginForm input {
-    min-height: 30px;
-    border: 1px solid #b2b2b2;
     font-size: 28px;
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin: 10px 10px;
-    line-height: normal;
-    padding: 5px 25px;
-    background-color: white;
 }
 
 .FunctionsBox {
@@ -232,21 +236,38 @@ span {
 
 .SingupForm {
     display: grid;
-    grid-template: repeat(6, 2fr) 1fr / repeat(2, 1fr);
+    grid-template: repeat(7, 1fr)/ repeat(2, 1fr);
 }
 
-.SingupFormInput {
-    min-height: 30px;
-    border: 1px solid #b2b2b2;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    line-height: normal;
-    padding: 5px 25px;
-    background-color: white;
-}
 
 span p {
     font-weight: bold;
+}
+
+.pinCode {
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+.pinCode:placeholder {
+    text-align: center;
+}
+
+.errors2 {
+    grid-area: 1/1/3/3;
+    justify-self: center;
+    align-self: center;
+    font-size: 16px;
+    font-weight: none;
+    color: red;
+}
+
+.errors1 {
+    grid-area: 6/1/7/3;
+    justify-self: center;
+    align-self: start;
+    font-size: 16px;
+    font-weight: none;
+    color: red;
+    margin-top: 5px;
 }

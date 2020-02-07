@@ -11,7 +11,7 @@
             <div class="SubSearchBox">
                     <form action="index.php" method="get">
                         <span>Sök:</span>
-                        <input autocomplete="off" name="Searched" type="search" size="40">
+                        <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
                         <button type="submit" class="Buttons searchbutton">Go</button>
                     </form>
                 </div>';
@@ -19,25 +19,38 @@
             $searchq = test_input($_GET['Searched']);
             if(!empty($searchq)){
 
-                $sql = "SELECT * FROM arkiv WHERE Titel LIKE '%$searchq%' OR Author LIKE '%$searchq%' OR TryckBolag  LIKE '%$searchq%' OR TryckYear LIKE '%$searchq%' OR Genre LIKE '%$searchq%' OR Language LIKE '%$searchq%'";
-                $result = mysqli_query($con, $sql);
-                $resultAmount = mysqli_num_rows($result);
+                $sql = "SELECT * FROM arkiv WHERE Titel LIKE ? OR Author LIKE ? OR TryckBolag  LIKE ? OR TryckYear LIKE ? OR Genre LIKE ? OR Language LIKE ?";
+                
+                $stmt = mysqli_stmt_init($con);
+                
+                if(!mysqli_stmt_prepare($stmt, $sql)){
+                    header('Location: index.php?error=sqlerror');
+                    exit();
+                }else{
+                mysqli_stmt_bind_param($stmt, 'ssssss', $searchq, $searchq, $searchq, $searchq, $searchq, $searchq);
+                mysqli_stmt_execute($stmt);
+                
+                $result = mysqli_stmt_get_result($stmt);    
+                $resultAmount = mysqli_stmt_num_rows($stmt);
 
                 if($resultAmount > 0){
                     $aResultRow = 1;
                     echo '<script>document.getElementById("Container").style.gridTemplateRows = "repeat('.($resultAmount + 3).', 1fr)";</script><p style="grid-area: 2/2/3/10; align-self: end;"><span>Hittade '.$resultAmount.' resultat för  "'.$searchq.'".</span></p><div class="SearchedResults" style="grid-template-rows: repeat('.$resultAmount.', 1fr);  grid-row: 3/'.($resultAmount + 3).';">';
-                    while($row = mysqli_fetch_assoc($result)){
+                    while($row = mysqli_fetch_array($result)){
                         echo '<div class="aResult" style="grid-row: '.$aResultRow.' / '.($aResultRow + 1).';"><p style="font-size: 22px; grid-area: 1/1/2/4;"><span>Titel : </span>'.$row['Titel'].'</p><p style="grid-area: 2/1/3/2;"><span>Förfatare : </span>'.$row['Author'].'</p><p style="grid-area: 2/2/3/3;"><span>Genre : </span>'.$row['Genre'].'</p><p style="grid-area: 3/1/4/3;"><span>Språk : </span>'.$row['Language'].'</p><p style="grid-area: 3/2/4/3;"><span>Antal exemplar : </span>'.$row['Quantity'].' st</p><p style="grid-area: 4/1/5/2;"><i>'.$row['TryckBolag'];
                         if(empty($row['TryckBolag']) || empty($row['TryckYear'])){}else{echo ' , ';}
                         echo $row['TryckYear'].'</i></p></div>';
                         $aResultRow++;
                     }
+                    
                     echo '</div>';
                 }
                 else{
                     echo '<script>document.getElementById("Container").style.gridTemplateRows = "repeat(4, 1fr)";</script><div class="SearchedResults" style="grid-row: 3/4;"><h2 style="justify-self: center;
     align-self: center;">There was no search results on "'.$searchq.'".</h2></div>';
                 }
+                }
+                mysqli_stmt_close($stmt);
             }else{
                 echo '<script>document.getElementById("Container").style.gridTemplateRows = "repeat(4, 1fr)";</script><div class="SearchedResults" style="grid-row: 3/4;"><h1 style="justify-self: center;
     align-self: center;">Please Enter Something!!</h1></div>';
@@ -48,7 +61,7 @@
                     <h1>Katalog</h1>
                     <form action="index.php" method="get">
                         <span>Sök:</span>
-                        <input autocomplete="off" name="Searched" type="search" size="40">
+                        <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
                         <button type="submit" class="Buttons searchbutton">Go</button>
                     </form>
                   </div>';
@@ -58,7 +71,7 @@
         echo '<div class="LoginBox">
         <div>
             <span style="justify-self: center; align-self: center;">Min profil :</span>
-            <button class="Buttons" onclick="LoginModalDisplay(1)">Loggga in</button>
+            <button class="Buttons" onclick="LoginModalDisplay(1)">Logga in</button>
         </div>
     </div>
     
@@ -70,8 +83,8 @@
             <form class="LoginForm" action="includes/login.inc.php" method="post">
                 <span style="grid-area: 1/1/2/3; font-size: 16px; justify-self: center; align-self: center;">
                     Du kan använda epostadress eller användarnamn för att logga in.</span>
-                <input type="text" name="UserEmail"autocomplete="off" style="grid-area: 2/1/3/3;" placeholder="Användarnamn Eller E-mail....">
-                <input type="password" autocomplete="off" style="grid-area: 3/1/4/3;" placeholder="Lösenord....">
+                <input class="Inputs" type="text" name="UserEmail"autocomplete="off" style="grid-area: 2/1/3/3;" placeholder="Användarnamn Eller E-mail....">
+                <input class="Inputs" type="password" autocomplete="off" style="grid-area: 3/1/4/3;" placeholder="Pin-kod....">
             </form>
             <button style="grid-area: 4/1/5/2;" class="Buttons" onclick="LoginModalDisplay(0)">Cancel</button>
             <button style="grid-area: 4/2/5/3;" type="submit" class="Buttons" onclick="SubmitLoginForm()">Logga in</button>
@@ -84,7 +97,7 @@
         echo '<div class="LoginBox">
         <div>
             <a href="profile.php"><button class="Buttons">Min profil</button></a>
-            <button onclick="LoginModalDisplay(1)" class="Buttons">Loggga ut</button>
+            <button onclick="LoginModalDisplay(1)" class="Buttons">Logga ut</button>
         </div>
     </div>
     

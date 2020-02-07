@@ -6,12 +6,7 @@
 else{
         echo 'Logged in is = false';
 }
-    function test_input($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-}
+
     require'includes/db.inc.php';
 ?>
 <!DOCTYPE html>
