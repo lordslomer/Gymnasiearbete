@@ -8,6 +8,10 @@
         }
     }
 
+    function InputColorWhite(event) {
+        event.target.style.color = "black";
+    }
+
     function SubmitLoginForm() {
         document.getElementsByClassName("LoginForm")[0].submit();
     }

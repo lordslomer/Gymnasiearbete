@@ -10,11 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
  
     switch ($ButtonClicked) {
         case 'userAdd':
-            echo 'U tried to Add a user <br>';
             
             $Fname = test_input($_POST['Fname']);
             $Lname = test_input($_POST['Lname']);
-            $Email = test_input($_POST['Email']);
+            $Email = strtolower(test_input($_POST['Email']));
             $Pwd = test_input($_POST['Pwd']);
             $Type = test_input($_POST['Type']);
             
@@ -24,12 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             }else{
                 $errors = array();
                 
-                if(!preg_match("/^[a-zA-Z]*$/",$Fname)){
+                if(!preg_match("/^[a-öA-Ö]*$/",$Fname)){
                     $Fname = ""; 
                     array_push($errors,'invalidFname');
                 }
                 
-                if(!preg_match("/^[a-zA-Z]*$/",$Lname)){
+                if(!preg_match("/^[a-öA-Ö]*$/",$Lname)){
                     $Lname = ""; 
                     array_push($errors,'invalidLname');
                 }
@@ -44,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     array_push($errors,'invalidPwd');
                 }
                 
-                if($Type != 'nonAdmin' && $Type != 'Admin'){
+                if($Type != 'none' && $Type != 'Admin'){
                     $Type = ""; 
                     array_push($errors,'invalidType');
                 }
@@ -60,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     
                 }else{
                     $Username = $Fname.'.'.$Lname;
-                    echo $Username.'<br>';
+                    $Username = strtolower($Username);
                     
                     $sql = "SELECT UserID FROM users WHERE Email=?";
                     
@@ -83,32 +82,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                             exit();
                         }
                         else{
-                            $sql = "SELECT UserID FROM users WHERE Username=?";
+                            $sql = "SELECT UserID,Username FROM users WHERE Username LIKE '%$Username%' ORDER BY Username";
+                            $results = mysqli_query($con, $sql);
+                            $resultAmount = mysqli_num_rows($results);
+                               echo $resultAmount.'<br>';
+                            if($resultAmount > 0){
+                                while($rows = mysqli_fetch_array($results, MYSQLI_NUM)){
+                                    $lastUsername = $rows[1];
+                                }
+                                $indexlast = str_replace($Username,"",$lastUsername);
+                                if($indexlast == ''){
+                                    $indexlast = 0;
+                                }
+                               $Username = $Username.($indexlast + 1);
+                            }
+                            
+                            mysqli_stmt_close($stmt);
+                            $sql = "INSERT INTO users (Fname, Lname, Username, Email, Pwd, Type) VALUES (?,?,?,?,?,?)";
                             $stmt = mysqli_stmt_init($con);
+                            
                             if(!mysqli_stmt_prepare($stmt, $sql)){
                                 header('Location: ../profile.php?error=sqlerror');
                                 exit();
                             }else{
-                                mysqli_stmt_bind_param($stmt, 's', $Username);
-                                mysqli_stmt_execute($stmt);
-                                mysqli_stmt_store_result($stmt);
-                        
-                                $resultAmount = mysqli_stmt_num_rows($stmt);
                                 
-                                if($resultAmount > 0){
-                                    echo 'Username already taken!';
-                                }
-                                else
-                                {
-                                    echo 'Username is not taken!';
-                                }
+                                $hashedPwd = password_hash($Pwd, PASSWORD_DEFAULT);
+                                echo $Fname.' '.$Lname.' '.$Username.' '.$Email.' '.$hashedPwd.' '.$Type;                                
+                                mysqli_stmt_bind_param($stmt, 'ssssss', $Fname, $Lname, $Username, $Email, $hashedPwd, $Type);
+                                mysqli_stmt_execute($stmt);
+                                
+                                header('Location: ../profile.php?signupaddstatus=success');
+                                exit();
+                                
                             }
                         }
-                        
-                        /* sql = "INSERT INTO users (Fname, Lname, Username, Email, Pwd, Type) VALUES ()"
-                    
-                        header('Location: ../profile.php?signupaddstatus=success');
-                        exit();*/
                     }
                 }
             }
@@ -135,8 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             exit();
             
     }
-        
-    
+      mysqli_stmt_close($stmt);
+      mysqli_close($con);
 }else{
     http_response_code(404);
     exit();

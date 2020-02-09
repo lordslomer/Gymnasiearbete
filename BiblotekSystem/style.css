@@ -120,6 +120,7 @@ body {
 
 a {
     text-decoration: none;
+    color: black;
 }
 
 .Buttons:hover,
@@ -208,7 +209,7 @@ span {
 .FunctionsBox {
     grid-area: 3/1/9/11;
     display: grid;
-    grid-template: 1fr 2fr 2fr / repeat(4, 1fr);
+    grid-template: 1fr 3fr 3fr / repeat(4, 1fr);
     grid-gap: 5px;
     padding: 5px;
 }
@@ -228,6 +229,29 @@ span {
     grid-template-columns: 1fr 2fr;
     grid-gap: 5px;
     padding: 5px;
+}
+
+.FuntionBox table td,
+.FuntionBox table th {
+    border: 1px solid #ddd;
+    padding: 8px 3px;
+}
+
+.tableBody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#foucesedTr td {
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+}
+
+.FuntionBox table thead th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: black;
+    color: white;
 }
 
 .SingupForm span {
@@ -270,4 +294,12 @@ span p {
     font-weight: none;
     color: red;
     margin-top: 5px;
+}
+
+.tableSearchbox {
+    max-width: 40%;
+}
+
+.tableSearchbox:focus {
+    max-width: 100%;
 }

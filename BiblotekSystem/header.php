@@ -1,11 +1,8 @@
 <?php
     session_start();
-    if(isset($_SESSION['Isloggedin'])){
-        echo 'Logged in is = '.$_SESSION['Isloggedin'];
+    if(isset($_SESSION['UserID'])){
+        echo 'User id that is logged in = '.$_SESSION['UserID'];
     }
-else{
-        echo 'Logged in is = false';
-}
 
     require'includes/db.inc.php';
 ?>
@@ -16,6 +13,7 @@ else{
     <meta charset="UTF-8">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <title> Main </title>
 </head>
 

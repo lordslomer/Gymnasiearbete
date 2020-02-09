@@ -1,10 +1,13 @@
 <?php
     require 'header.php';
-    if(!isset($_SESSION['Isloggedin'])){
+    if(!isset($_SESSION['UserID'])){
         
         header('location: index.php?');
         exit();
         
+    }else if($_SESSION['Type'] != 'Admin'){
+        header('location: subprofile.php');
+        exit();
     }
      
 ?>
@@ -42,11 +45,14 @@
     <!-- Info div för den inloggade konto -->
     <div class="SearchedResults" style="grid-row: 2/3; border:none; padding:0px; grid-gap:0px;">
         <div class="aResult" style=" grid-template: repeat(3,1fr)/ 1fr 2fr 2fr; border:none; width: 100%; height:100%; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
-            <p style="font-size: 22px; grid-area: 1/1/2/4; justify-self: center; align-self: center;"><span>Namn : </span>Firstname Lastname</p>
+            <p style="font-size: 22px; grid-area: 1/1/2/4; justify-self: center; align-self: center;"><span>Namn : </span><?php
+                echo $_SESSION['Fname'].' '.$_SESSION['Lname'];?></p>
             <span style="justify-self: center; align-self: center; grid-area: 2/2/3/3; font-size:22px; border-bottom: 2px solid black;">Användarnamn</span>
-            <p style="justify-self: center; align-self: start; grid-area: 3/2/4/3;">Firstnamne.Lastname</p>
+            <p style="justify-self: center; align-self: start; grid-area: 3/2/4/3;"><?php
+                echo $_SESSION['Username'];?></p>
             <span style="justify-self: center; align-self: center; grid-area: 2/3/3/4; font-size:22px; border-bottom: 2px solid black;">Epostadress</span>
-            <p style="justify-self: center; align-self: start; grid-area: 3/3/4/4;">Firstnamne.Lastname@elev.ntig.se</p>
+            <p style="justify-self: center; align-self: start; grid-area: 3/3/4/4;"><?php
+                echo $_SESSION['Email'];?></p>
             <button class="Buttons" style="grid-area: 2/1/4/2; justify-self: center; align-self: center;">Ändra Lösenord</button>
         </div>
     </div>
@@ -64,8 +70,7 @@
 
         <div class="FuntionBox">HERE IS Funtion 3</div>
 
-        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus'])){echo 'style="display:grid;"';}?>>
-
+        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) ){echo 'style="display:grid;"';}?>>
             <form class="SingupForm" method="post" action="includes/users.inc.php">
                 <span style="grid-area: 1/1/2/3;">
                     <p style="font-size: 24px;">Lägg till användare</p>
@@ -135,14 +140,14 @@
                     <input class="Inputs" autocomplete="off" name="Fname" type="text" value="<?php
                     if(isset($FnameError)){
                         echo $FnameError.'" style="color:red;';
-                    }else if(isset($_GET['Fname'])){echo $_GET['Fname'];}?>" onclick="InputColorWhite(event)" placeholder="Förenamn" onkeypress="return /[a-zA-Z]/i.test(event.key)" required>
+                    }else if(isset($_GET['Fname'])){echo $_GET['Fname'];}?>" onclick="InputColorWhite(event)" placeholder="Förenamn" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
                 </span>
                 <span style="grid-area: 3/1/4/3; justify-self:center; align-self:end;">
                     <p>Efternamn</p>
                     <input class="Inputs" autocomplete="off" name="Lname" type="text" value="<?php
                     if(isset($LnameError)){
                         echo $LnameError.'" style="color:red;';
-                    }else if(isset($_GET['Lname'])){echo $_GET['Lname'];}?>" onclick="InputColorWhite(event)" placeholder="Efternamn" onkeypress="return /[a-zA-Z]/i.test(event.key)" required>
+                    }else if(isset($_GET['Lname'])){echo $_GET['Lname'];}?>" onclick="InputColorWhite(event)" placeholder="Efternamn" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
                 </span>
                 <span style="grid-area: 4/1/5/3; justify-self:center; align-self:end;">
                     <p>Epostadress</p>
@@ -221,24 +226,69 @@
         }
     }else{
     echo 'checked';
-    } ?> name="Type" type="radio" value="nonAdmin">
+    } ?> name="Type" type="radio" value="none">
                     <span>Elev</span>
                 </span>
                 <span style="grid-area: 7/1/8/3; justify-self:center; align-self:center">
-                    <input type="submit" name="userAdd" class="Buttons" value="Lägg till">
-                    <input type="submit" name="userEdit" class="Buttons" value="Rediagre">
-                    <input type="submit" name="userDelete" class="Buttons" value="Radera">
+                    <input type="submit" name="userAdd" class="Buttons scrolltobtns" value="Lägg till">
+                    <input style="display:none;" type="submit" name="userEdit" class="Buttons" value="Rediagre">
+                    <input style="display:none;" type="submit" name="userDelete" class="Buttons" value="Radera">
                 </span>
             </form>
+            <div style="display: grid; grid-template-rows: 32px auto; grid-gap: 5px; padding: 5px;">
 
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                </thead>
-            </table>
+                <input type="search" class="Inputs tableSearchbox" oninput="SreachFilter(3,0)" placeholder="Sök.." autocomplete="off">
+                <?php
+                $sql = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID'];
 
+                $result = mysqli_query($con, $sql);
+
+                
+                $resultAmount = mysqli_num_rows($result);
+                if($resultAmount > 0){
+                echo '<div>
+                    <table class="subtables" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0,1)">Förenamn</th>
+                                <th onclick="sortTable(1,1)">Efternamn</th>
+                                <th onclick="sortTable(2,1)">Epostadress</th>
+                                <th onclick="sortTable(3,1)">Typ</th>
+                            </tr>
+                        </thead><tbody class="tableBody">';
+                            
+                        $results_per_page = 10;
+                        $number_of_pages = ceil($resultAmount / $results_per_page);
+                    
+                        if(!isset($_GET['userspage'])){
+                            $page = 1;
+                        }else{
+                            $page = $_GET['userspage'];
+                        }
+                    
+                        $startinglimitNumber = ($page - 1 ) * $results_per_page;
+                        $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']."  LIMIT ".$startinglimitNumber.",".$results_per_page;
+                        $resultp = mysqli_query($con, $sqlp);
+                        $resultAmountonpage = mysqli_num_rows($resultp);
+                        while($rows = mysqli_fetch_assoc($resultp)){
+                            echo '<tr onclick="GetRowValues(event)">
+                                <td>'.$rows['Fname'].'</td>
+                                <td>'.$rows['Lname'].'</td>
+                                <td>'.$rows['Email'].'</td>
+                                <td>'.$rows['Type'].'</td>
+                            </tr>';
+                        
+                            }
+                            echo'</tbody>
+                    </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
+                    
+                        for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                            }
+                            echo '</div>
+                </div>';
+                    }
+                ?>
+            </div>
         </div>
 
     </div>
@@ -246,8 +296,52 @@
 </div>
 
 <script>
-    function InputColorWhite(event) {
-        event.target.style.color = "black";
+    var OldValues = [];
+    var HeaderTitel = '';
+
+    function sortTable(column, timeClicked) {
+        var tablebody = document.getElementsByClassName("tableBody")[0];
+        if (typeof(tablebody) != 'undefined' && tablebody != null) {
+
+            var Values = [];
+
+            for (var i = 0; i < tablebody.childElementCount; i++) {
+                Values[i] = tablebody.children[i].children[column].innerText;
+            }
+
+            switch (timeClicked) {
+                case 1:
+                    for (var i = 0; i < Values.length; i++) {
+                        OldValues[i] = Values[i];
+                    }
+                    HeaderTitel = event.target.innerHTML;
+                    Values.sort();
+                    event.target.setAttribute('onclick', 'sortTable(' + column + ',' + (timeClicked + 1) + ')');
+                    event.target.innerHTML = HeaderTitel + ' &#8659;';
+                    break;
+
+                case 2:
+                    Values.sort();
+                    Values.reverse();
+                    event.target.setAttribute('onclick', 'sortTable(' + column + ',' + (timeClicked + 1) + ')');
+                    event.target.innerHTML = HeaderTitel + ' &#8657;';
+                    break;
+
+                case 3:
+                    for (var i = 0; i < Values.length; i++) {
+                        Values[i] = OldValues[i];
+                    }
+                    OldValues = [];
+                    event.target.setAttribute('onclick', 'sortTable(' + column + ',1)');
+                    event.target.innerHTML = HeaderTitel;
+                    break;
+            }
+
+            for (var i = 0; i < Values.length; i++) {
+                tablebody.children[i].children[column].innerText = Values[i];
+            }
+
+        }
     }
 
     function DisplayFunctionBoxes(NumValue) {
@@ -259,6 +353,127 @@
                 FunctionBoxes[i].style.display = "none";
             }
         }
+    }
+
+    document.getElementsByClassName('scrolltobtns')[0].addEventListener("load", AutoScroll());
+
+    function AutoScroll() {
+        var isTrue = <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) ){echo '"true";';} else{echo '"false";';}?>
+        if (isTrue == 'true') {
+            document.getElementsByClassName('scrolltobtns')[0].scrollIntoView();
+        }
+    }
+
+
+
+    function GetRowValues(event) {
+        var foucesedRow = document.getElementById("foucesedTr");
+        if (typeof(foucesedRow) != 'undefined' && foucesedRow != null && foucesedRow.tagName == 'TR') {
+            foucesedRow.removeAttribute('id');
+            foucesedRow.children[0].setAttribute('style', '');
+            foucesedRow.children[3].setAttribute('style', '');
+        }
+        event.target.parentElement.setAttribute('id', 'foucesedTr');
+        event.target.parentElement.children[0].setAttribute('style', 'border-left: 3px solid black;');
+        event.target.parentElement.children[3].setAttribute('style', 'border-right: 3px solid black;');
+
+        var errorelemnt1 = document.getElementsByClassName('errors2')[0];
+        var errorelemnt2 = document.getElementsByClassName('errors1')[0];
+        if (typeof(errorelemnt1) != 'undefined' && errorelemnt1 != null) {
+            errorelemnt1.remove();
+            errorelemnt2.remove();
+        }
+        document.getElementsByName("Fname")[0].value = event.target.parentElement.children[0].innerHTML;
+        document.getElementsByName("Lname")[0].value = event.target.parentElement.children[1].innerHTML;
+        document.getElementsByName("Email")[0].value = event.target.parentElement.children[2].innerHTML;
+        var TypeValue = event.target.parentElement.childNodes[3].innerHTML;
+        if (TypeValue == 'Admin') {
+            document.getElementsByName("Type")[0].checked = true;
+        } else {
+            document.getElementsByName("Type")[1].checked = true;
+        }
+
+        document.getElementsByClassName('SingupForm')[0].children[4].style.display = 'none';
+        document.getElementsByClassName('SingupForm')[0].children[4].children[1].required = false;
+        document.getElementsByClassName('SingupForm')[0].children[5].style.gridArea = '5/1/6/3';
+        document.getElementsByClassName('SingupForm')[0].children[6].style.gridArea = '6/1/7/3';
+
+        if (document.getElementsByClassName('SingupForm')[0].children[6].children.length < 4) {
+
+            document.getElementsByClassName('SingupForm')[0].children[6].children[0].style.display = "none";
+            document.getElementsByClassName('SingupForm')[0].children[6].children[1].style.display = "inline";
+            document.getElementsByClassName('SingupForm')[0].children[6].children[2].style.display = "inline";
+            var newBtn = document.createElement("SPAN");
+            newBtn.innerHTML = "« lägg till";
+            newBtn.setAttribute('class', 'Buttons');
+            newBtn.setAttribute('onclick', 'ReverseRowValues()');
+            document.getElementsByClassName('SingupForm')[0].children[6].insertBefore(newBtn, document.getElementsByClassName('SingupForm')[0].children[6].children[0]);
+
+        }
+
+        if (document.getElementsByClassName('SingupForm')[0].children.length < 9) {
+            var passBtn = document.createElement("SPAN");
+            passBtn.innerHTML = "Ändra <br> Lösenord";
+            passBtn.setAttribute('class', 'Buttons scrolltobtns');
+            document.getElementsByClassName('SingupForm')[0].appendChild(passBtn);
+            passBtn.style.fontSize = '16px';
+            passBtn.style.alignSelf = 'center';
+
+            var usernameBtn = document.createElement("SPAN");
+            usernameBtn.innerHTML = "Ändra Änvandarenamn";
+            usernameBtn.setAttribute('class', 'Buttons scrolltobtns');
+            document.getElementsByClassName('SingupForm')[0].appendChild(usernameBtn);
+            usernameBtn.style.fontSize = '16px';
+            usernameBtn.style.alignSelf = 'center';
+
+            document.getElementsByClassName('SingupForm')[0].style.gridColumnGap = "10px";
+        }
+    }
+
+    function ReverseRowValues() {
+        var foucesedRow = document.getElementById("foucesedTr");
+        foucesedRow.removeAttribute('id');
+        foucesedRow.children[0].setAttribute('style', '');
+        foucesedRow.children[3].setAttribute('style', '');
+        document.getElementsByName("Fname")[0].value = '';
+        document.getElementsByName("Lname")[0].value = '';
+        document.getElementsByName("Email")[0].value = '';
+        document.getElementsByName("Type")[1].checked = true;
+        document.getElementsByClassName('SingupForm')[0].children[4].setAttribute('style', 'grid-area: 5/1/6/3;justify-self:center;align-self:end;');
+        document.getElementsByClassName('SingupForm')[0].children[4].children[1].required = true;
+        document.getElementsByClassName('SingupForm')[0].children[5].style.gridArea = '6/1/7/3';
+        document.getElementsByClassName('SingupForm')[0].children[6].style.gridArea = '7/1/8/3';
+        document.getElementsByClassName('SingupForm')[0].children[6].children[1].style.display = "inline";
+        document.getElementsByClassName('SingupForm')[0].children[6].children[2].style.display = "none";
+        document.getElementsByClassName('SingupForm')[0].children[6].children[3].style.display = "none";
+
+
+        document.getElementsByClassName('SingupForm')[0].children[6].children[0].remove();
+        document.getElementsByClassName('SingupForm')[0].children[7].remove();
+        document.getElementsByClassName('SingupForm')[0].children[7].remove();
+    }
+
+    function SreachFilter(BoxNumber, PageNumber) {
+        var searchTxt = document.getElementsByClassName("tableSearchbox")[0];
+        if (PageNumber == 0) {
+            PageNumber = 1;
+        }
+        $.post("includes/searchtables.inc.php", {
+            searchVal: searchTxt.value,
+            userspage: PageNumber
+        }, function(output) {
+            for (var i = 1; 1 < document.getElementsByClassName('FuntionBox')[BoxNumber].children[1].childElementCount; i++) {
+                document.getElementsByClassName('FuntionBox')[BoxNumber].children[1].children[i].remove();
+            }
+            if (output != 0) {
+
+                var newBox = document.createElement("DIV");
+                newBox.innerHTML = output;
+                document.getElementsByClassName('FuntionBox')[3].children[1].appendChild(newBox);
+                newBox.scrollIntoView();
+            }
+        });
+
     }
 
 </script>
