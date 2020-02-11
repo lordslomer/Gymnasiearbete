@@ -20,12 +20,10 @@
                 header('Location: ../index.php?loginerror=emptypwd&UserEmail='.$UserMail.'&'.$searchq);
                 exit();
             }else{
-                echo  $UserMail.' '.$Pwd;
                 
                 $sql = "SELECT * FROM users WHERE Username=? OR Email=?";
                 $stmt = mysqli_stmt_init($con);
                 if(!mysqli_stmt_prepare($stmt, $sql)){
-                    echo 'here';
                     header('Location: ../index.php?loginerror=sqlerror&'.$searchq);
                     exit();
                 }else{

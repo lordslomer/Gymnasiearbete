@@ -21,15 +21,15 @@
                                 <table class="subtables" style="width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th onclick="sortTable(0,1)">Förenamn</th>
-                                            <th onclick="sortTable(1,1)">Efternamn</th>
-                                            <th onclick="sortTable(2,1)">Epostadress</th>
-                                            <th onclick="sortTable(3,1)">Typ</th>
+                                            <th onclick="sortTable(0)">Förenamn</th>
+                                            <th onclick="sortTable(0)">Efternamn</th>
+                                            <th onclick="sortTable(0)">Epostadress</th>
+                                            <th onclick="sortTable(0)">Typ</th>
                                          </tr>
                                     </thead>
                                     <tbody class="tableBody">';
 
-                            $results_per_page = 10;
+                            $results_per_page = 5;
                             $number_of_pages = ceil($resultAmount / $results_per_page);
                             if(!isset($_POST['userspage']) || $_POST['userspage'] == 0){
                                 $page = 1;
@@ -56,9 +56,16 @@
                                 
                                 echo'</tbody>
                         </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
-                                if($number_of_pages > 1){
-                            for($pagee = 1; $pagee <=$number_of_pages; $pagee++){ echo '<input type="button" value="'.$pagee.'" onclick="SreachFilter(3,'.$pagee.')" style="margin: 0px 10px;" class="Buttons">';
-                            }}
+                        if($number_of_pages > 1){
+                            if($number_of_pages <= 5){
+                                for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                                    }
+                            }else{
+                                
+                                echo 'HEre do ';    
+                                
+                            }
+                        }
                             echo '</div>';
                         }
                             else{
@@ -78,15 +85,15 @@
                     <table class="subtables" style="width: 100%;">
                         <thead>
                             <tr>
-                                <th>Förenamn &#8659;</th>
-                                <th>Efternamn</th>
-                                <th>Epostadress</th>
-                                <th>Typ</th>
+                                <th onclick="sortTable(0)">Förenamn</th>
+                                <th onclick="sortTable(0)">Efternamn</th>
+                                <th onclick="sortTable(0)">Epostadress</th>
+                                <th onclick="sortTable(0)">Typ</th>
                             </tr>
                         </thead>
                         <tbody class="tableBody">';
                             
-                        $results_per_page = 10;
+                        $results_per_page = 5;
                         $number_of_pages = ceil($resultAmount / $results_per_page);
                          
                         if(!isset($_GET['userspage'])){
@@ -110,9 +117,16 @@
                             }
                             echo'</tbody>
                     </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
-                    
-                        for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                        if($number_of_pages > 1){
+                            if($number_of_pages <= 5){
+                                for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                                    }
+                            }else{
+                                
+                                echo 'HEre do ';    
+                                
                             }
+                        }
                             echo '</div>
                 </div>';
                     }

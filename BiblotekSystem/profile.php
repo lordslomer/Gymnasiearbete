@@ -9,7 +9,7 @@
         header('location: subprofile.php');
         exit();
     }
-     
+    
 ?>
 
 <div id="Container" style="grid-template-rows: repeat(8, 1fr);">
@@ -53,7 +53,7 @@
             <span style="justify-self: center; align-self: center; grid-area: 2/3/3/4; font-size:22px; border-bottom: 2px solid black;">Epostadress</span>
             <p style="justify-self: center; align-self: start; grid-area: 3/3/4/4;"><?php
                 echo $_SESSION['Email'];?></p>
-            <button class="Buttons" style="grid-area: 2/1/4/2; justify-self: center; align-self: center;">Ändra Lösenord</button>
+            <form action="changeinfo.php" method="post" target="hehe" style="grid-area: 2/1/4/2; justify-self: center; align-self: center;"><button class="Buttons" name="passBtn" type="button" onclick="popupsubmitForm('logged')">Ändra <br> Pin-kod</button></form>
         </div>
     </div>
 
@@ -70,7 +70,7 @@
 
         <div class="FuntionBox">HERE IS Funtion 3</div>
 
-        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) ){echo 'style="display:grid;"';}?>>
+        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) || isset($_GET['changedEmail']) || isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){echo 'style="display:grid;"';}?>>
             <form class="SingupForm" method="post" action="includes/users.inc.php">
                 <span style="grid-area: 1/1/2/3;">
                     <p style="font-size: 24px;">Lägg till användare</p>
@@ -221,12 +221,12 @@
                     <input autocomplete="off" name="Type" type="radio" <?php if(isset($_GET['Type']) && $_GET['Type'] == 'Admin'){ echo 'checked';} ?> value="Admin">
                     <span>Administratör</span>
                     <input autocomplete="off" pattern="[0-9]" <?php if(isset($_GET['Type'])){
-        if($_GET['Type'] != 'Admin'){
-    echo 'checked';
-        }
-    }else{
-    echo 'checked';
-    } ?> name="Type" type="radio" value="none">
+                    if($_GET['Type'] != 'Admin'){
+                        echo 'checked';
+                    }
+                    }else{
+                        echo 'checked';
+                    } ?> name="Type" type="radio" value="none">
                     <span>Elev</span>
                 </span>
                 <span style="grid-area: 7/1/8/3; justify-self:center; align-self:center">
@@ -235,12 +235,45 @@
                     <input style="display:none;" type="submit" name="userDelete" class="Buttons" value="Radera">
                 </span>
             </form>
+
             <div style="display: grid; grid-template-rows: 32px auto; grid-gap: 5px; padding: 5px;">
 
                 <input type="search" class="Inputs tableSearchbox" oninput="SreachFilter(3,0)" placeholder="Sök.." autocomplete="off">
                 <?php
+                
+                $columnFname = 'Förenamn';
+                $columnLname = 'Efternamn';
+                $columnEmail = 'Epostadress';
+                $columnType = 'Typ';
+                
+                if(isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){
+                    $column = substr($_GET['sortTable'], 1);
+                    
+                    switch ($column){
+                        case $columnFname:
+                            $column = ' ORDER BY Fname';
+                            $columnFname = $columnFname.' &#8659;';
+                            break;
+                        case $columnLname:
+                            $column = " ORDER BY Lname";
+                            $columnLname = $columnLname.' &#8659;';
+                            break;
+                        case $columnEmail:
+                            $column = " ORDER BY Email";
+                            $columnEmail = $columnEmail.' &#8659;';
+                            break;
+                        case $columnType:
+                            $column = " ORDER BY Type";
+                            $columnType = $columnType.' &#8659;';
+                            break;
+                        default:
+                            $column = " ";
+                            break;
+                    }
+                    
+                }
+                
                 $sql = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID'];
-
                 $result = mysqli_query($con, $sql);
 
                 
@@ -250,14 +283,14 @@
                     <table class="subtables" style="width: 100%;">
                         <thead>
                             <tr>
-                                <th onclick="sortTable(0,1)">Förenamn</th>
-                                <th onclick="sortTable(1,1)">Efternamn</th>
-                                <th onclick="sortTable(2,1)">Epostadress</th>
-                                <th onclick="sortTable(3,1)">Typ</th>
+                                <th onclick="sortTable(0)">'.$columnFname.'</th>
+                                <th onclick="sortTable(0)">'.$columnLname.'</th>
+                                <th onclick="sortTable(0)">'.$columnEmail.'</th>
+                                <th onclick="sortTable(0)">'.$columnType.'</th>
                             </tr>
                         </thead><tbody class="tableBody">';
                             
-                        $results_per_page = 10;
+                        $results_per_page = 1;
                         $number_of_pages = ceil($resultAmount / $results_per_page);
                     
                         if(!isset($_GET['userspage'])){
@@ -267,7 +300,13 @@
                         }
                     
                         $startinglimitNumber = ($page - 1 ) * $results_per_page;
-                        $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']."  LIMIT ".$startinglimitNumber.",".$results_per_page;
+                        if(isset($column)){
+                        $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']." ".$column." LIMIT ".$startinglimitNumber.",".$results_per_page;
+                        }else{
+                        $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']." LIMIT ".$startinglimitNumber.",".$results_per_page;
+                            
+                        }
+
                         $resultp = mysqli_query($con, $sqlp);
                         $resultAmountonpage = mysqli_num_rows($resultp);
                         while($rows = mysqli_fetch_assoc($resultp)){
@@ -281,14 +320,22 @@
                             }
                             echo'</tbody>
                     </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
-                    
-                        for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                        if($number_of_pages > 1){
+                            if($number_of_pages <= 5){
+                                for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                                    }
+                            }else{
+                                
+                                echo $page;    
+                                
                             }
+                        }
                             echo '</div>
                 </div>';
                     }
                 ?>
             </div>
+
         </div>
 
     </div>
@@ -296,53 +343,94 @@
 </div>
 
 <script>
+    function popupsubmitForm(Type) {
+        if (Type == "logged") {
+            cureentPage = window.document;
+            localStorage.setItem("Firstpage", cureentPage);
+            titleInpue = document.createElement("INPUT");
+            event.target.parentElement.appendChild(titleInpue);
+            titleInpue.setAttribute('type', 'text');
+            titleInpue.setAttribute('name', 'changeinfo');
+            titleInpue.setAttribute('value', event.target.innerHTML);
+
+            typeInput = document.createElement("INPUT");
+            event.target.parentElement.appendChild(typeInput);
+            typeInput.setAttribute('type', 'text');
+            typeInput.setAttribute('name', 'userType');
+            typeInput.setAttribute('value', Type);
+
+            window.open('changeinfo.php', 'hehe', 'width=600,height=480,top=210,left=500');
+            event.target.parentElement.submit();
+            titleInpue.remove();
+            typeInput.remove();
+
+        } else {
+            newForm = document.createElement("FORM");
+            newForm.setAttribute('action', 'changeinfo.php');
+            newForm.setAttribute('method', 'post');
+            newForm.setAttribute('target', 'hehe');
+            document.body.appendChild(newForm);
+
+            titleInpue = document.createElement("INPUT");
+            newForm.appendChild(titleInpue);
+            titleInpue.setAttribute('type', 'text');
+            titleInpue.setAttribute('name', 'changeinfo');
+            titleInpue.setAttribute('value', event.target.innerHTML);
+
+            typeInput = document.createElement("INPUT");
+            newForm.appendChild(typeInput);
+            typeInput.setAttribute('type', 'text');
+            typeInput.setAttribute('name', 'userType');
+            typeInput.setAttribute('value', Type);
+
+            window.open('changeinfo.php', 'hehe', 'width=600,height=480,top=210,left=500');
+            newForm.submit();
+            newForm.remove();
+        }
+    }
+
     var OldValues = [];
     var HeaderTitel = '';
 
-    function sortTable(column, timeClicked) {
-        var tablebody = document.getElementsByClassName("tableBody")[0];
-        if (typeof(tablebody) != 'undefined' && tablebody != null) {
+    function sortTable(TableNumber) {
+        var columnTitle = event.target.innerHTML;
+        var getRidof = '<?php if(isset($_GET['sortTable'])){ echo 'sortTable='.$_GET['sortTable']; }else{ echo 'DoNotRunStringReplaceCodeOnGetRidofPlzzzz';} ?>';
+        var oldUrl = decodeURIComponent(window.location.href).replace(decodeURIComponent(window.location.search), "");
+        console.log(window.location.href);
+        var str = decodeURIComponent(window.location.search);
+        var checkif = str.includes("?");
+        if (checkif) {
+            str = str.replace("?", "");
+            if (str.length > 0) {
 
-            var Values = [];
-
-            for (var i = 0; i < tablebody.childElementCount; i++) {
-                Values[i] = tablebody.children[i].children[column].innerText;
+                var checkifValueexists = str.includes(getRidof);
+                while (checkifValueexists) {
+                    str = str.replace(getRidof, "");
+                    checkifValueexists = str.includes(getRidof);
+                }
+                var stringstart = str.substring(0, 1);
+                var checkifand = stringstart.includes("&");
+                while (checkifand) {
+                    str = str.replace(stringstart, "");
+                    stringstart = str.substring(0, 1);
+                    checkifand = stringstart.includes("&");
+                }
+                var newUrl = oldUrl + "?sortTable=" + TableNumber + columnTitle + '&' + str;
+            } else {
+                var newUrl = oldUrl + "?sortTable=" + TableNumber + columnTitle;
             }
-
-            switch (timeClicked) {
-                case 1:
-                    for (var i = 0; i < Values.length; i++) {
-                        OldValues[i] = Values[i];
-                    }
-                    HeaderTitel = event.target.innerHTML;
-                    Values.sort();
-                    event.target.setAttribute('onclick', 'sortTable(' + column + ',' + (timeClicked + 1) + ')');
-                    event.target.innerHTML = HeaderTitel + ' &#8659;';
-                    break;
-
-                case 2:
-                    Values.sort();
-                    Values.reverse();
-                    event.target.setAttribute('onclick', 'sortTable(' + column + ',' + (timeClicked + 1) + ')');
-                    event.target.innerHTML = HeaderTitel + ' &#8657;';
-                    break;
-
-                case 3:
-                    for (var i = 0; i < Values.length; i++) {
-                        Values[i] = OldValues[i];
-                    }
-                    OldValues = [];
-                    event.target.setAttribute('onclick', 'sortTable(' + column + ',1)');
-                    event.target.innerHTML = HeaderTitel;
-                    break;
+        } else {
+            if (oldUrl.includes("?")) {
+                var newUrl = oldUrl + "sortTable=" + TableNumber + columnTitle;
+            } else {
+                var newUrl = oldUrl + "?sortTable=" + TableNumber + columnTitle;
             }
-
-            for (var i = 0; i < Values.length; i++) {
-                tablebody.children[i].children[column].innerText = Values[i];
-            }
-
         }
+        console.log(newUrl);
+        window.location.replace(newUrl);
     }
+
+
 
     function DisplayFunctionBoxes(NumValue) {
         var FunctionBoxes = document.getElementsByClassName("FuntionBox");
@@ -358,7 +446,7 @@
     document.getElementsByClassName('scrolltobtns')[0].addEventListener("load", AutoScroll());
 
     function AutoScroll() {
-        var isTrue = <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) ){echo '"true";';} else{echo '"false";';}?>
+        var isTrue = <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) || isset($_GET['changedEmail']) || isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){echo '"true";';} else{echo '"false";';}?>
         if (isTrue == 'true') {
             document.getElementsByClassName('scrolltobtns')[0].scrollIntoView();
         }
@@ -386,7 +474,7 @@
         document.getElementsByName("Fname")[0].value = event.target.parentElement.children[0].innerHTML;
         document.getElementsByName("Lname")[0].value = event.target.parentElement.children[1].innerHTML;
         document.getElementsByName("Email")[0].value = event.target.parentElement.children[2].innerHTML;
-        var TypeValue = event.target.parentElement.childNodes[3].innerHTML;
+        var TypeValue = event.target.parentElement.children[3].innerHTML;
         if (TypeValue == 'Admin') {
             document.getElementsByName("Type")[0].checked = true;
         } else {
@@ -408,20 +496,27 @@
             newBtn.setAttribute('class', 'Buttons');
             newBtn.setAttribute('onclick', 'ReverseRowValues()');
             document.getElementsByClassName('SingupForm')[0].children[6].insertBefore(newBtn, document.getElementsByClassName('SingupForm')[0].children[6].children[0]);
-
         }
 
-        if (document.getElementsByClassName('SingupForm')[0].children.length < 9) {
-            var passBtn = document.createElement("SPAN");
-            passBtn.innerHTML = "Ändra <br> Lösenord";
+        if (document.getElementsByClassName('SingupForm')[0].children[4].style.display = 'none') {
+            if (document.getElementsByClassName('SingupForm')[0].children.length > 7) {
+                document.getElementsByClassName('SingupForm')[0].children[7].remove();
+                document.getElementsByClassName('SingupForm')[0].children[7].remove();
+            }
+            var passBtn = document.createElement("BUTTON");
+            passBtn.innerHTML = "Ändra <br> Pin-kod";
             passBtn.setAttribute('class', 'Buttons scrolltobtns');
+            passBtn.setAttribute('type', 'button');
+            passBtn.setAttribute('onclick', 'popupsubmitForm("' + document.getElementsByName("Email")[0].value + '")');
             document.getElementsByClassName('SingupForm')[0].appendChild(passBtn);
             passBtn.style.fontSize = '16px';
             passBtn.style.alignSelf = 'center';
 
-            var usernameBtn = document.createElement("SPAN");
-            usernameBtn.innerHTML = "Ändra Änvandarenamn";
+            var usernameBtn = document.createElement("BUTTON");
+            usernameBtn.innerHTML = "Ändra <br> Änvandarenamn";
             usernameBtn.setAttribute('class', 'Buttons scrolltobtns');
+            usernameBtn.setAttribute('type', 'button');
+            usernameBtn.setAttribute('onclick', 'popupsubmitForm("' + document.getElementsByName("Email")[0].value + '")');
             document.getElementsByClassName('SingupForm')[0].appendChild(usernameBtn);
             usernameBtn.style.fontSize = '16px';
             usernameBtn.style.alignSelf = 'center';
