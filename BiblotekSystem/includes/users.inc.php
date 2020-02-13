@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     array_push($errors,'invalidPwd');
                 }
                 
-                if($Type != 'none' && $Type != 'Admin'){
+                if($Type != 'Elev' && $Type != 'Admin'){
                     $Type = ""; 
                     array_push($errors,'invalidType');
                 }
@@ -123,24 +123,149 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             
             break;
         case 'userEdit':
-            echo 'U tried to Edit a user <br>';
             
             $Fname = test_input($_POST['Fname']);
             $Lname = test_input($_POST['Lname']);
-            $Email = test_input($_POST['Email']);
-            $Pwd = test_input($_POST['Pwd']);
+            $Email = strtolower(test_input($_POST['Email']));
             $Type = test_input($_POST['Type']);
+            $hiddenEmail = $_POST['hiddenEmail'];
             
-            echo $Fname.$Lname.$Email.$Pwd.$Type;
-            
+            if(empty($Fname) || empty($Lname) || empty($Email) || empty($Type)){
+                header('Location: ../profile.php?signupupdatestatus=emptyfields'.'&Fname='.$Fname.'&Lname='.$Lname.'&Email='.$Email.'&Type='.$Type);
+                exit();
+            }else{
+                $errors = array();
+
+                if(!preg_match("/^[a-öA-Ö]*$/",$Fname)){
+                        $Fname = ""; 
+                        array_push($errors,'invalidFname');
+                    }
+                if(!preg_match("/^[a-öA-Ö]*$/",$Lname)){
+                        $Lname = ""; 
+                        array_push($errors,'invalidLname');
+                    }
+                if(!filter_var($Email, FILTER_VALIDATE_EMAIL)){
+                        $Email = ""; 
+                        array_push($errors,'invalidEmail');
+                    }
+                if($Type != 'Elev' && $Type != 'Admin'){
+                        $Type = ""; 
+                        array_push($errors,'invalidType');
+                    }
+
+                if(count($errors) > 1 ){
+                        $errormsg = 'signupupdatestatus[]='.implode('&signupupdatestatus[]=', $errors);
+                        header('Location: ../profile.php?'.$errormsg.'&Fname='.$Fname.'&Lname='.$Lname.'&Email='.$Email.'&Type='.$Type);
+                        exit();
+                    }else if(count($errors) == 1){
+                        $errormsg = $errors[0];
+                        header('Location: ../profile.php?signupupdatestatus='.$errormsg.'&Fname='.$Fname.'&Lname='.$Lname.'&Email='.$Email.'&Type='.$Type);
+                        exit();
+                    }else{
+                    echo $Fname.'<br>'.$Lname.'<br>'.$Email.'<br>'.$Type.'<br>'.$hiddenEmail.'<br>';
+                    if($Email == $hiddenEmail){
+                        $sql = 'SELECT Email FROM users WHERE Email=?';
+                        $stmt = mysqli_stmt_init($con);
+                        
+                        if(!mysqli_stmt_prepare($stmt, $sql)){
+                                header('Location: ../profile.php?error=sqlerror');
+                                exit();
+                            }else{
+                            mysqli_stmt_bind_param($stmt, "s", $hiddenEmail);
+                            mysqli_stmt_execute($stmt);
+                            mysqli_stmt_store_result($stmt);
+                            $resultsRowIndex = mysqli_stmt_num_rows($stmt);
+                            
+                            if($resultsRowIndex == 1){
+                                
+                                $sql = "UPDATE users SET Fname=?, Lname=?, Type=? WHERE Email=?";
+                                $stmt = mysqli_stmt_init($con);
+
+                                if(!mysqli_stmt_prepare($stmt, $sql)){
+                                    header('Location: ../profile.php?error=sqlerror');
+                                    exit();
+                                }else{                          
+                                    mysqli_stmt_bind_param($stmt, 'ssss', $Fname, $Lname, $Type, $hiddenEmail);
+                                    mysqli_stmt_execute($stmt);
+
+                                    header('Location: ../profile.php?signupupdatestatus=success');
+                                    exit();
+
+                                } 
+                                
+                            }else{
+                                header('Location: ../profile.php?error=accnotfound');
+                                exit();
+                            }
+                        }
+                        
+                    }else{                        
+                        $sql = 'SELECT Email FROM users WHERE Email=?';
+                        $stmt = mysqli_stmt_init($con);
+                        
+                        if(!mysqli_stmt_prepare($stmt, $sql)){
+                                header('Location: ../profile.php?error=sqlerror');
+                                exit();
+                            }else{
+                            mysqli_stmt_bind_param($stmt, "s", $hiddenEmail);
+                            mysqli_stmt_execute($stmt);
+                            mysqli_stmt_store_result($stmt);
+                            $resultsRowIndex = mysqli_stmt_num_rows($stmt);
+                            
+                            if($resultsRowIndex == 1){
+                                
+                                $sql = "SELECT Email FROM users WHERE Email=?";
+                                $stmt = mysqli_stmt_init($con);
+
+                                if(!mysqli_stmt_prepare($stmt, $sql)){
+                                    header('Location: ../profile.php?error=sqlerror');
+                                    exit();
+                                }else{                          
+                                    mysqli_stmt_bind_param($stmt, 's',$Email);
+                                    mysqli_stmt_execute($stmt);
+                                    mysqli_stmt_store_result($stmt);
+                                    $resultsRowIndex = mysqli_stmt_num_rows($stmt);
+                                    
+                                    if($resultsRowIndex > 0){
+                                        
+                                        header('Location: ../profile.php?signupupdatestatus=emailtaken');
+                                        exit();
+                                        
+                                    }else{
+                                        
+                                        $sql = "UPDATE users SET Fname=?, Lname=?, Email=?, Type=? WHERE Email=?";
+                                        $stmt = mysqli_stmt_init($con);
+
+                                        if(!mysqli_stmt_prepare($stmt, $sql)){
+                                            header('Location: ../profile.php?error=sqlerror');
+                                            exit();
+                                        }else{                          
+                                            mysqli_stmt_bind_param($stmt, 'sssss', $Fname, $Lname, $Email, $Type, $hiddenEmail);
+                                            mysqli_stmt_execute($stmt);
+
+                                            header('Location: ../profile.php?signupupdatestatus=success');
+                                            exit();
+
+                                        }
+                                    }
+                                } 
+                            }else{
+                                header('Location: ../profile.php?error=accnotfound');
+                                exit();
+                            }
+                        }
+                    }
+                }
+            }
+                    
+                        
             break;
-        case 'userDelete';
+        case 'userDelete':
             echo 'U tried to Delete a user';
             break;
         default: 
-            header('Location: ../profile.php?buttonwasnotclicked');
-            exit();
-            
+            echo $ButtonClicked;
+            break;
     }
       mysqli_stmt_close($stmt);
       mysqli_close($con);

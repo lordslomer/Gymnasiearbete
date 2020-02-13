@@ -4,6 +4,15 @@
         echo 'User id that is logged in = '.$_SESSION['UserID'];
     }
 
+    if(isset($_SESSION['TempName'])){
+       $_SESSION['TempTitle'] = '';
+        $_SESSION['TempType'] = '';
+        $_SESSION['TempUsername'] = '';
+        $_SESSION['TempName'] = '';
+        $_SESSION['TempEmail'] = '';
+        $_SESSION['TempAcctype'] = '';
+    }
+
     require'includes/db.inc.php';
 ?>
 <!DOCTYPE html>

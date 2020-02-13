@@ -29,15 +29,15 @@
                                     </thead>
                                     <tbody class="tableBody">';
 
-                            $results_per_page = 5;
+                            $results_per_page = 10;
                             $number_of_pages = ceil($resultAmount / $results_per_page);
-                            if(!isset($_POST['userspage']) || $_POST['userspage'] == 0){
-                                $page = 1;
-                            }else{
-                                $page = $_POST['userspage'];
-                            }
+                            if(!isset($_GET['userspage'])){
+                            $currpage = 1;
+                        }else{
+                            $currpage = $_GET['userspage'];
+                        }
 
-                            $startinglimitNumber = ($page - 1 ) * $results_per_page;
+                            $startinglimitNumber = ($currpage - 1 ) * $results_per_page;
 
                             
 
@@ -55,15 +55,44 @@
                                 }
                                 
                                 echo'</tbody>
-                        </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
+                    </table><span>Sida '.$currpage.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
                         if($number_of_pages > 1){
                             if($number_of_pages <= 5){
-                                for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                                for($page = 1; $page <=$number_of_pages; $page++){ 
+                                    if($currpage == $page){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?" userspage=' .$page.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$page.'</button></a>';
                                     }
                             }else{
-                                
-                                echo 'HEre do ';    
-                                
+                                $startPage = 1;
+                                $endPage = 5;
+                                $asfarRight = '<a style="margin: 0px 10px;" href="profile.php?userspage='.$number_of_pages.'"><button class="Buttons"> >> </button></a>';
+                                $asfarleft = '<a style="margin: 0px 10px;" href="profile.php?userspage=1" ><button class="Buttons"> << </button></a>';
+                                $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                $leftButon = '';
+                                while($currpage > $endPage){
+                                    $startPage += 5;
+                                    $endPage += 5;
+                                    $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                }
+                                if($currpage > $number_of_pages - 5){
+                                    $startPage = $number_of_pages - 4;
+                                    $endPage = $number_of_pages;
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                    $rightButon = '';
+                                }
+                                echo $asfarleft;
+                                echo $leftButon;
+                                for($i = $startPage; $i <= $endPage; $i++){ 
+                                    if($currpage == $i){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?userspage=' .$i.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$i.'</button></a>';
+                                    }
+                                echo $rightButon;
+                                echo $asfarRight;
                             }
                         }
                             echo '</div>';
@@ -93,16 +122,16 @@
                         </thead>
                         <tbody class="tableBody">';
                             
-                        $results_per_page = 5;
+                        $results_per_page = 10;
                         $number_of_pages = ceil($resultAmount / $results_per_page);
                          
                         if(!isset($_GET['userspage'])){
-                            $page = 1;
+                            $currpage = 1;
                         }else{
-                            $page = $_GET['userspage'];
+                            $currpage = $_GET['userspage'];
                         }
                     
-                        $startinglimitNumber = ($page - 1 ) * $results_per_page;
+                        $startinglimitNumber = ($currpage - 1 ) * $results_per_page;
                         $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']."  LIMIT ".$startinglimitNumber.",".$results_per_page;
                         $resultp = mysqli_query($con, $sqlp);
                         $resultAmountonpage = mysqli_num_rows($resultp);
@@ -116,15 +145,44 @@
                         
                             }
                             echo'</tbody>
-                    </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
+                    </table><span>Sida '.$currpage.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
                         if($number_of_pages > 1){
                             if($number_of_pages <= 5){
-                                for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                                for($page = 1; $page <=$number_of_pages; $page++){ 
+                                    if($currpage == $page){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?" userspage=' .$page.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$page.'</button></a>';
                                     }
                             }else{
-                                
-                                echo 'HEre do ';    
-                                
+                                $startPage = 1;
+                                $endPage = 5;
+                                $asfarRight = '<a style="margin: 0px 10px;" href="profile.php?userspage='.$number_of_pages.'"><button class="Buttons"> >> </button></a>';
+                                $asfarleft = '<a style="margin: 0px 10px;" href="profile.php?userspage=1" ><button class="Buttons"> << </button></a>';
+                                $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                $leftButon = '';
+                                while($currpage > $endPage){
+                                    $startPage += 5;
+                                    $endPage += 5;
+                                    $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                }
+                                if($currpage > $number_of_pages - 5){
+                                    $startPage = $number_of_pages - 4;
+                                    $endPage = $number_of_pages;
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                    $rightButon = '';
+                                }
+                                echo $asfarleft;
+                                echo $leftButon;
+                                for($i = $startPage; $i <= $endPage; $i++){ 
+                                    if($currpage == $i){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?userspage=' .$i.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$i.'</button></a>';
+                                    }
+                                echo $rightButon;
+                                echo $asfarRight;
                             }
                         }
                             echo '</div>

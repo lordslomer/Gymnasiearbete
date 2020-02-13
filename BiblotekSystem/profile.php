@@ -9,7 +9,6 @@
         header('location: subprofile.php');
         exit();
     }
-    
 ?>
 
 <div id="Container" style="grid-template-rows: repeat(8, 1fr);">
@@ -20,7 +19,7 @@
     <div class="SubSearchBox">
         <form action="index.php" method="get">
             <span>Sök:</span>
-            <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
+            <input class="Inputs" onfocus="onloadInputs(1)" autocomplete="off" name="Searched" type="search" size="40">
             <button type="submit" class="Buttons searchbutton">Go</button>
         </form>
     </div>
@@ -64,18 +63,19 @@
         <button class="Buttons" onclick="DisplayFunctionBoxes(1)" style="grid-area: 1/2/2/3;">Redigera Utlån</button>
         <button class="Buttons" onclick="DisplayFunctionBoxes(3)" style="grid-area: 1/4/2/5;">Redigera AnvändaKonto</button>
 
-        <div class="FuntionBox">HERE IS Funtion 1</div>
+        <div class="FuntionBox">HERE IS Function 1</div>
 
-        <div class="FuntionBox">HERE IS Funtion 2</div>
+        <div class="FuntionBox">HERE IS Function 2</div>
 
-        <div class="FuntionBox">HERE IS Funtion 3</div>
+        <div class="FuntionBox">HERE IS Function 3</div>
 
-        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus']) || isset($_GET['userspage']) || isset($_GET['changedEmail']) || isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){echo 'style="display:grid;"';}?>>
+        <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus']) || isset($_GET['signupupdatestatus']) || isset($_GET['userspage']) || isset($_GET['changedEmail']) || isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){echo 'style="display:grid;"';}?>>
             <form class="SingupForm" method="post" action="includes/users.inc.php">
                 <span style="grid-area: 1/1/2/3;">
                     <p style="font-size: 24px;">Lägg till användare</p>
                     <p style="font-size: 14px; font-weight: none;">Välj användare från tablen för att rediagre eller radera användarens Info.</p>
                 </span>
+
                 <?php 
                     
                         if(isset($_GET['signupaddstatus'])){
@@ -133,32 +133,84 @@
                                 }
                             }
                         } 
+                
+                        if(isset($_GET['signupupdatestatus'])){
+                            if(is_array($_GET['signupupdatestatus'])){
+                                for ($i = 0; $i < count($_GET['signupupdatestatus']); $i++){
+                                    
+                                    if($_GET['signupupdatestatus'][$i] == 'invalidFname'){
+                                        $FnameError = 'Inga mellanrum i Förnamnet';
+                                    }
+                                    else if($_GET['signupupdatestatus'][$i] == 'invalidLname'){
+                                        $LnameError = 'Inga mellanrum i Efternamnet';
+                                    }
+                                    else if($_GET['signupupdatestatus'][$i] == 'invalidEmail'){
+                                        $EmailEroor = 'Ogiltig Epostadress';
+                                    }
+                                    else if($_GET['signupupdatestatus'][$i] == 'invalidType'){
+                                        echo '<p class="errors1">Ogiltig Konto typ</p>';
+                                    }
+                                }
+                            }else{
+                                if($_GET['signupupdatestatus'] == 'success'){
+                                    echo '<p class="errors2" style="color:green;">Användaren har redigerats</p>'; 
+                                }else{
+                                    switch ($_GET['signupupdatestatus']){
+                                        case 'emailtaken':
+                                            echo '<p class="errors2">Epostadress redan tagen !</p>';
+                                            break;
+                                        case 'emptyfields':
+                                            echo '<p class="errors1">Fyll i allt !</p>';
+                                            break;
+                                        case 'invalidFname':
+                                            echo '<p class="errors1">Inga mellanrum i Förnamnet !</p>';
+                                            $FnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidLname':
+                                            echo '<p class="errors1">Inga mellanrum i Efternamnet !</p>';
+                                            $LnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidEmail':
+                                            echo '<p class="errors1">Ogiltig Epostadress !</p>';
+                                            $EmailEroor = 'Fel Format';
+                                            break;
+                                        case 'invalidType':
+                                            echo '<p class="errors1">Ogiltig Konto typ !</p>';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        } 
+                
+                
                     
                     ?>
                 <span style="grid-area: 2/1/3/3; justify-self:center; align-self:end;">
                     <p>Förenamn</p>
-                    <input class="Inputs" autocomplete="off" name="Fname" type="text" value="<?php
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="Fname" type="text" value="<?php
                     if(isset($FnameError)){
                         echo $FnameError.'" style="color:red;';
                     }else if(isset($_GET['Fname'])){echo $_GET['Fname'];}?>" onclick="InputColorWhite(event)" placeholder="Förenamn" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
                 </span>
                 <span style="grid-area: 3/1/4/3; justify-self:center; align-self:end;">
                     <p>Efternamn</p>
-                    <input class="Inputs" autocomplete="off" name="Lname" type="text" value="<?php
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="Lname" type="text" value="<?php
                     if(isset($LnameError)){
                         echo $LnameError.'" style="color:red;';
                     }else if(isset($_GET['Lname'])){echo $_GET['Lname'];}?>" onclick="InputColorWhite(event)" placeholder="Efternamn" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
                 </span>
                 <span style="grid-area: 4/1/5/3; justify-self:center; align-self:end;">
                     <p>Epostadress</p>
-                    <input class="Inputs" autocomplete="off" name="Email" type="email" value="<?php
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="Email" type="email" value="<?php
                     if(isset($EmailEroor)){
                         echo $EmailEroor.'" style="color:red;';
                     }else if(isset($_GET['Email'])){echo $_GET['Email'];}?>" onclick="InputColorWhite(event)" placeholder="Email@example.com" required>
                 </span>
                 <span style="grid-area: 5/1/6/3; justify-self:center; align-self:end;">
                     <p>6-siffrig Pin-kod</p>
-                    <input class="Inputs pinCode" autocomplete="off" name="Pwd" type="password" maxlength="6" placeholder="XX-XX-XX" onkeypress="return /[0-9]/i.test(event.key)" required>
+                    <input class="Inputs pinCode" onfocus="onloadInputs(2)" autocomplete="off" name="Pwd" type="password" maxlength="6" placeholder="XX-XX-XX" onkeypress="return /[0-9]/i.test(event.key)" required>
                 </span>
                 <?php 
                     
@@ -184,9 +236,12 @@
                                 }
                             }else{
                                 if($_GET['signupaddstatus'] == 'success'){
-                                    echo '<p class="errors1" style="color:green;">Användaren har lagts till</p>'; 
+                                    echo '<p class="errors1" style="color:green;">Användaren har lagts</p>'; 
                                 }else{
                                     switch ($_GET['signupaddstatus']){
+                                         case 'emailtaken':
+                                            echo '<p class="errors2">Epostadress redan tagen !</p>';
+                                            break;
                                         case 'emptyfields':
                                             echo '<p class="errors1">Fyll i allt !</p>';
                                             break;
@@ -214,19 +269,68 @@
                                 }
                             }
                         } 
+                        
+                        
+                        if(isset($_GET['signupupdatestatus'])){
+                            if(is_array($_GET['signupupdatestatus'])){
+                                for ($i = 0; $i < count($_GET['signupupdatestatus']); $i++){
+                                    
+                                    if($_GET['signupupdatestatus'][$i] == 'invalidFname'){
+                                        $FnameError = 'Inga mellanrum i Förnamnet';
+                                    }
+                                    else if($_GET['signupupdatestatus'][$i] == 'invalidLname'){
+                                        $LnameError = 'Inga mellanrum i Efternamnet';
+                                    }
+                                    else if($_GET['signupupdatestatus'][$i] == 'invalidEmail'){
+                                        $EmailEroor = 'Ogiltig Epostadress';
+                                    }
+                                    else if($_GET['signupupdatestatus'][$i] == 'invalidType'){
+                                        echo '<p class="errors1">Ogiltig Konto typ</p>';
+                                    }
+                                }
+                            }else{
+                                if($_GET['signupupdatestatus'] == 'success'){
+                                    echo '<p class="errors1" style="color:green;">Användaren har redigerats till</p>'; 
+                                }else{
+                                    switch ($_GET['signupupdatestatus']){
+                                        case 'emptyfields':
+                                            echo '<p class="errors1">Fyll i allt !</p>';
+                                            break;
+                                        case 'invalidFname':
+                                            echo '<p class="errors1">Inga mellanrum i Förnamnet !</p>';
+                                            $FnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidLname':
+                                            echo '<p class="errors1">Inga mellanrum i Efternamnet !</p>';
+                                            $LnameError = 'Fel Format';
+                                            break;
+                                        case 'invalidEmail':
+                                            echo '<p class="errors1">Ogiltig Epostadress !</p>';
+                                            $EmailEroor = 'Fel Format';
+                                            break;
+                                        case 'invalidType':
+                                            echo '<p class="errors1">Ogiltig Konto typ !</p>';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        } 
+                
                     
                     ?>
                 <span style="grid-area: 6/1/7/3; font-size: 16px; font-weight: none; justify-self:center; align-self:end">
                     <p style="font-size: 22px;">Typ av användare</p>
                     <input autocomplete="off" name="Type" type="radio" <?php if(isset($_GET['Type']) && $_GET['Type'] == 'Admin'){ echo 'checked';} ?> value="Admin">
                     <span>Administratör</span>
-                    <input autocomplete="off" pattern="[0-9]" <?php if(isset($_GET['Type'])){
+                    <input autocomplete="off" <?php if(isset($_GET['Type'])){
                     if($_GET['Type'] != 'Admin'){
                         echo 'checked';
                     }
                     }else{
                         echo 'checked';
-                    } ?> name="Type" type="radio" value="none">
+                    } ?> name="Type" type="radio" value="Elev">
                     <span>Elev</span>
                 </span>
                 <span style="grid-area: 7/1/8/3; justify-self:center; align-self:center">
@@ -290,27 +394,29 @@
                             </tr>
                         </thead><tbody class="tableBody">';
                             
-                        $results_per_page = 1;
+                        $results_per_page = 10;
                         $number_of_pages = ceil($resultAmount / $results_per_page);
                     
                         if(!isset($_GET['userspage'])){
-                            $page = 1;
+                            $currpage = 1;
                         }else{
-                            $page = $_GET['userspage'];
+                            $currpage = $_GET['userspage'];
                         }
                     
-                        $startinglimitNumber = ($page - 1 ) * $results_per_page;
+                        $startinglimitNumber = ($currpage - 1 ) * $results_per_page;
                         if(isset($column)){
                         $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']." ".$column." LIMIT ".$startinglimitNumber.",".$results_per_page;
                         }else{
                         $sqlp = "SELECT * FROM users WHERE UserID !=".$_SESSION['UserID']." LIMIT ".$startinglimitNumber.",".$results_per_page;
                             
-                        }
-
+                        }  
+                    
+                        
+                        $output= "";
                         $resultp = mysqli_query($con, $sqlp);
                         $resultAmountonpage = mysqli_num_rows($resultp);
                         while($rows = mysqli_fetch_assoc($resultp)){
-                            echo '<tr onclick="GetRowValues(event)">
+                            $output.= '<tr onclick="GetRowValues(event)">
                                 <td>'.$rows['Fname'].'</td>
                                 <td>'.$rows['Lname'].'</td>
                                 <td>'.$rows['Email'].'</td>
@@ -318,16 +424,46 @@
                             </tr>';
                         
                             }
+                    echo $output;
                             echo'</tbody>
-                    </table><span>Sida '.$page.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
+                    </table><span>Sida '.$currpage.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Användare</span><div style="text-align: center;">';
                         if($number_of_pages > 1){
                             if($number_of_pages <= 5){
-                                for($page = 1; $page <=$number_of_pages; $page++){ echo '<a style="margin: 0px 10px;;" href="profile.php?userspage=' .$page.'"><button class="Buttons">'.$page.'</button></a>';
+                                for($page = 1; $page <=$number_of_pages; $page++){ 
+                                    if($currpage == $page){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?userspage=' .$page.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$page.'</button></a>';
                                     }
                             }else{
-                                
-                                echo $page;    
-                                
+                                $startPage = 1;
+                                $endPage = 5;
+                                $asfarRight = '<a style="margin: 0px 10px;" href="profile.php?userspage='.$number_of_pages.'"><button class="Buttons"> >> </button></a>';
+                                $asfarleft = '<a style="margin: 0px 10px;" href="profile.php?userspage=1" ><button class="Buttons"> << </button></a>';
+                                $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                $leftButon = '';
+                                while($currpage > $endPage){
+                                    $startPage += 5;
+                                    $endPage += 5;
+                                    $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                }
+                                if($currpage > $number_of_pages - 5){
+                                    $startPage = $number_of_pages - 4;
+                                    $endPage = $number_of_pages;
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                    $rightButon = '';
+                                }
+                                echo $asfarleft;
+                                echo $leftButon;
+                                for($i = $startPage; $i <= $endPage; $i++){ 
+                                    if($currpage == $i){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?userspage=' .$i.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$i.'</button></a>';
+                                    }
+                                echo $rightButon;
+                                echo $asfarRight;
                             }
                         }
                             echo '</div>
@@ -376,7 +512,6 @@
             titleInpue.setAttribute('type', 'text');
             titleInpue.setAttribute('name', 'changeinfo');
             titleInpue.setAttribute('value', event.target.innerHTML);
-
             typeInput = document.createElement("INPUT");
             newForm.appendChild(typeInput);
             typeInput.setAttribute('type', 'text');
@@ -502,7 +637,16 @@
             if (document.getElementsByClassName('SingupForm')[0].children.length > 7) {
                 document.getElementsByClassName('SingupForm')[0].children[7].remove();
                 document.getElementsByClassName('SingupForm')[0].children[7].remove();
+                document.getElementsByClassName('SingupForm')[0].children[7].remove();
             }
+            var hiddenEmail = document.createElement("INPUT");
+            hiddenEmail.setAttribute('class', 'INPUTS');
+            document.getElementsByClassName('SingupForm')[0].appendChild(hiddenEmail);
+            hiddenEmail.value = event.target.parentElement.children[2].innerHTML;
+            hiddenEmail.readOnly = true;
+            hiddenEmail.hidden = true;
+            hiddenEmail.setAttribute('name', 'hiddenEmail');
+
             var passBtn = document.createElement("BUTTON");
             passBtn.innerHTML = "Ändra <br> Pin-kod";
             passBtn.setAttribute('class', 'Buttons scrolltobtns');
@@ -544,6 +688,7 @@
 
 
         document.getElementsByClassName('SingupForm')[0].children[6].children[0].remove();
+        document.getElementsByClassName('SingupForm')[0].children[7].remove();
         document.getElementsByClassName('SingupForm')[0].children[7].remove();
         document.getElementsByClassName('SingupForm')[0].children[7].remove();
     }

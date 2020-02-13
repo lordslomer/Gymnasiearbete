@@ -16,7 +16,7 @@
     <div class="SubSearchBox">
         <form action="index.php" method="get">
             <span>Sök:</span>
-            <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
+            <input class="Inputs" onload="onloadInputs()" autocomplete="off" name="Searched" type="search" size="40">
             <button type="submit" class="Buttons searchbutton">Go</button>
         </form>
     </div>

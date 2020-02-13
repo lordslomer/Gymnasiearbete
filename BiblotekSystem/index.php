@@ -5,6 +5,14 @@
 
 <div id="Container">
     <?php
+    
+        function strtolower_utf8($inputString) {
+            $outputString = utf8_decode($inputString);
+            $outputString = strtolower($outputString);
+            $outputString = utf8_encode($outputString);
+            return $outputString;
+        }
+    
         if(isset($_GET['Searched'])){
             $_SESSION['Searched'] = $_GET['Searched'];
             echo ' <button class="Buttons" style="grid-column: 1/3; grid-row: 1/2; justify-self: center;
@@ -12,7 +20,7 @@
             <div class="SubSearchBox">
                     <form action="index.php" method="get">
                         <span>Sök:</span>
-                        <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
+                        <input class="Inputs" onfocus="onloadInputs(1)" autocomplete="off" name="Searched" type="search" size="40">
                         <button type="submit" class="Buttons searchbutton">Go</button>
                     </form>
                 </div>';
@@ -29,10 +37,9 @@
                     $aResultRow = 1;
                     echo '<script>document.getElementById("Container").style.gridTemplateRows = "repeat('.($resultAmount + 3).', 1fr)";</script><p style="grid-area: 2/2/3/10; align-self: end;"><span>Hittade '.$resultAmount.' resultat för  "'.$searchq.'".</span></p><div class="SearchedResults" style="grid-template-rows: repeat('.$resultAmount.', 1fr);  grid-row: 3/'.($resultAmount + 3).';">';
                     while($row = mysqli_fetch_array($result)){
-                        $output = '<div class="aResult" style="grid-row: '.$aResultRow.' / '.($aResultRow + 1).';"><p style="font-size: 22px; grid-area: 1/1/2/4;"><span>Titel : </span>'.$row['Titel'].'</p><p style="grid-area: 2/1/3/2;"><span>Förfatare : </span>'.$row['Author'].'</p><p style="grid-area: 2/2/3/3;"><span>Genre : </span>'.$row['Genre'].'</p><p style="grid-area: 3/1/4/3;"><span>Språk : </span>'.$row['Language'].'</p><p style="grid-area: 3/2/4/3;"><span>Antal exemplar : </span>'.$row['Quantity'].' st</p><p style="grid-area: 4/1/5/2;"><i>'.$row['TryckBolag'];
-                        echo str_replace($searchq, '<span style="color:red;">'.$searchq.'</span>', $output);
+                        echo '<div class="aResult" style="grid-row: '.$aResultRow.' / '.($aResultRow + 1).';"><p style="font-size: 22px; grid-area: 1/1/2/4;"><span>Titel : </span>'.str_replace(strtolower_utf8( $searchq), '<span style="color:red;">'.$searchq.'</span>', strtolower_utf8( $row['Titel'])).'</p><p style="grid-area: 2/1/3/2;"><span>Förfatare : </span>'.str_replace(strtolower_utf8( $searchq), '<span style="color:red;">'.$searchq.'</span>', strtolower_utf8( $row['Author'])).'</p><p style="grid-area: 2/2/3/3;"><span>Genre : </span>'.str_replace(strtolower_utf8( $searchq), '<span style="color:red;">'.$searchq.'</span>', strtolower_utf8( $row['Genre'])).'</p><p style="grid-area: 3/1/4/3;"><span>Språk : </span>'.str_replace(strtolower_utf8( $searchq), '<span style="color:red;">'.$searchq.'</span>', strtolower_utf8( $row['Language'])).'</p><p style="grid-area: 3/2/4/3;"><span>Antal exemplar : </span>'.$row['Quantity'].' st</p><p style="grid-area: 4/1/5/2;"><i>'.str_replace(strtolower_utf8($searchq),'<span style="color:red;">'.$searchq.'</span>',strtolower_utf8($row['TryckBolag']));
                         if(empty($row['TryckBolag']) || empty($row['TryckYear'])){}else{echo ' , ';}
-                        echo $row['TryckYear'].'</i></p></div>';
+                        echo str_replace(strtolower_utf8( $searchq), '<span style="color:red;">'.$searchq.'</span>', strtolower_utf8( $row['TryckYear'])).'</i></p></div>';
                         $aResultRow++;
                     }
                     
@@ -53,7 +60,7 @@
                     <h1>Katalog</h1>
                     <form action="index.php" method="get">
                         <span>Sök:</span>
-                        <input class="Inputs" autocomplete="off" name="Searched" type="search" size="40">
+                        <input class="Inputs" onfocus="onloadInputs(1)" autocomplete="off" name="Searched" type="search" size="40">
                         <button type="submit" class="Buttons searchbutton">Go</button>
                     </form>
                   </div>';
@@ -106,8 +113,8 @@
     align-self: center;">Logga in</h1>
             <form class="LoginForm" action="includes/login.inc.php" method="post">
                 <span style="text-align:center; grid-area: 1/1/2/3; font-size: 16px; justify-self: center; align-self: center;'.$errormsg.'</span>
-                <input class="Inputs" type="text" name="UserEmail" autocomplete="off" style="grid-area: 2/1/3/3;'.$Emailerror.' placeholder="Användarnamn Eller Epostadress" onclick="InputColorWhite(event)" required>
-                <input class="Inputs pinCode" name="Pwd" maxlength="6" type="password" autocomplete="off" style="grid-area: 3/1/4/3;" placeholder="Pin-Kod : XX-XX-XX" onkeypress="return /[0-9]/i.test(event.key)" required>
+                <input class="Inputs" onfocus="onloadInputs(3)" type="text" name="UserEmail" autocomplete="off" style="grid-area: 2/1/3/3;'.$Emailerror.' placeholder="Användarnamn Eller Epostadress" onclick="InputColorWhite(event)" required>
+                <input class="Inputs pinCode" onfocus="onloadInputs(3)" name="Pwd" maxlength="6" type="password" autocomplete="off" style="grid-area: 3/1/4/3;" placeholder="Pin-Kod : XX-XX-XX" onkeypress="return /[0-9]/i.test(event.key)" required>
             </form>
             <button style="grid-area: 4/1/5/2;" class="Buttons" onclick="LoginModalDisplay(0)">Cancel</button>
             <button style="grid-area: 4/2/5/3;" type="submit" class="Buttons" onclick="SubmitLoginForm()">Logga in</button>
@@ -142,16 +149,6 @@
 
 
 </div>
-<script>
-    var input = document.getElementsByName('Pwd')[0];
-    input.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            document.getElementsByClassName('ModalContent')[0].childNodes[7].click();
-        }
-    });
-
-</script>
 
 <?php
     require'footer.php';
