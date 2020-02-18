@@ -67,7 +67,187 @@
 
         <div class="FuntionBox">HERE IS Function 2</div>
 
-        <div class="FuntionBox">HERE IS Function 3</div>
+        <div class="FuntionBox">
+
+            <form class="SingupForm" method="post" action="includes/users.inc.php">
+                <span style="grid-area: 1/1/2/3;">
+                    <p style="font-size: 24px;">Lägg till bok</p>
+                    <p style="font-size: 14px; font-weight: none;">Välj bok från tablen för att rediagre eller radera bokens Info.</p>
+                </span>
+                <span style="grid-area: 2/1/3/3; justify-self:center; align-self:end;">
+                    <p>Titel</p>
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="Titel" type="text" value="<?php
+                    if(isset($FnameError)){
+                        echo $FnameError.'" style="color:red;';
+                    }else if(isset($_GET['Fname'])){echo $_GET['Fname'];}?>" onclick="InputColorWhite(event)" placeholder="Bokens Titel" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
+                </span>
+                <span style="grid-area: 3/1/4/3; justify-self:center; align-self:end;">
+                    <p>Förfatare</p>
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="Author" type="text" value="<?php
+                    if(isset($LnameError)){
+                        echo $LnameError.'" style="color:red;';
+                    }else if(isset($_GET['Lname'])){echo $_GET['Lname'];}?>" onclick="InputColorWhite(event)" placeholder="Bokens Förfatare" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
+                </span>
+                <span style="grid-area: 4/1/5/3; justify-self:center; align-self:end;">
+                    <p>Genre</p>
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="Genre" type="text" onclick="InputColorWhite(event)" placeholder="Bokens Genre" onkeypress="return /[a-öA-Ö]/i.test(event.key)" required>
+                </span>
+                <span style="grid-area: 5/1/6/3; justify-self:center; align-self:end;">
+                    <p>TryckBolag</p>
+                    <input class="Inputs" onfocus="onloadInputs(2)" autocomplete="off" name="TryckB" type="text" value="<?php
+                    if(isset($EmailEroor)){
+                        echo $EmailEroor.'" style="color:red;';
+                    }else if(isset($_GET['Email'])){echo $_GET['Email'];}?>" onclick="InputColorWhite(event)" placeholder="TryckBolag" required>
+                </span>
+                <span style="grid-area: 6/1/7/2; justify-self:center; align-self:end;">
+                    <p>Datum i år</p>
+                    <input class="Inputs" style="max-width: 100;" onfocus="onloadInputs(2)" autocomplete="off" name="TryckY" maxlength="4" placeholder="Datum i år" onkeypress="return /[0-9]/i.test(event.key)" required>
+                </span>
+                <span style="grid-area: 6/2/7/3; justify-self:center; align-self:end;">
+                    <p>Antal exemplar</p>
+                    <input class="Inputs" style="max-width: 100;" onfocus="onloadInputs(2)" autocomplete="off" name="TryckY" maxlength="4" placeholder="Datum i år" onkeypress="return /[0-9]/i.test(event.key)" required>
+                </span>
+                <span style="grid-area: 7/1/8/3; justify-self:center; align-self:center">
+                    <input type="submit" name="userAdd" class="Buttons scrolltobtns" value="Lägg till">
+                    <input type="submit" name="userEdit" class="Buttons" value="Rediagre">
+                    <input type="submit" name="userDelete" class="Buttons" value="Radera">
+                </span>
+            </form>
+
+            <div style="display: grid; grid-template-rows: 32px auto; grid-gap: 5px; padding: 5px;">
+
+                <input type="search" class="Inputs tableSearchbox" oninput="SreachFilter(3,0)" placeholder="Sök.." autocomplete="off">
+                <?php
+                
+                $columnTitle = 'Titel';
+                $columnAuthor = 'Förfatare';
+                $columnGenre = 'Genre';
+                $columnLang = 'Språk';
+                
+                if(isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){
+                    $column = substr($_GET['sortTable'], 1);
+                    
+                    switch ($column){
+                        case $columnTitle:
+                            $column = ' ORDER BY Fname';
+                            $columnTitle = $columnTitle.' &#8659;';
+                            break;
+                        case $columnAuthor:
+                            $column = " ORDER BY Lname";
+                            $columnAuthor = $columnAuthor.' &#8659;';
+                            break;
+                        case $columnGenre:
+                            $column = " ORDER BY Email";
+                            $columnGenre = $columnGenre.' &#8659;';
+                            break;
+                        case $columnLang:
+                            $column = " ORDER BY Type";
+                            $columnLang = $columnLang.' &#8659;';
+                            break;
+                        default:
+                            $column = " ";
+                            break;
+                    }
+                    
+                }
+                
+                $sql = "SELECT * FROM arkiv";
+                $result = mysqli_query($con, $sql);
+
+                
+                $resultAmount = mysqli_num_rows($result);
+                if($resultAmount > 0){
+                echo '<div>
+                    <table class="subtables" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">'.$columnTitle.'</th>
+                                <th onclick="sortTable(0)">'.$columnAuthor.'</th>
+                                <th onclick="sortTable(0)">'.$columnGenre.'</th>
+                                <th onclick="sortTable(0)">'.$columnLang.'</th>
+                            </tr>
+                        </thead><tbody class="tableBody">';
+                            
+                        $results_per_page = 10;
+                        $number_of_pages = ceil($resultAmount / $results_per_page);
+                    
+                        if(!isset($_GET['userspage'])){
+                            $currpage = 1;
+                        }else{
+                            $currpage = $_GET['userspage'];
+                        }
+                    
+                        $startinglimitNumber = ($currpage - 1 ) * $results_per_page;
+                        if(isset($column)){
+                        $sqlp = "SELECT * FROM arkiv ".$column." LIMIT ".$startinglimitNumber.",".$results_per_page;
+                        }else{
+                        $sqlp = "SELECT * FROM arkiv LIMIT ".$startinglimitNumber.",".$results_per_page;
+                            
+                        }  
+                    
+                        
+                        $output= "";
+                        $resultp = mysqli_query($con, $sqlp);
+                        $resultAmountonpage = mysqli_num_rows($resultp);
+                        while($rows = mysqli_fetch_assoc($resultp)){
+                            $output.= '<tr onclick="GetRowValues(event)">
+                                <td>'.$rows['Titel'].'</td>
+                                <td>'.$rows['Author'].'</td>
+                                <td>'.$rows['Genre'].'</td>
+                                <td>'.$rows['Language'].'</td>
+                            </tr>';
+                        
+                            }
+                    echo $output;
+                            echo'</tbody>
+                    </table><span>Sida '.$currpage.' av '.$number_of_pages.' , '.($resultAmountonpage + $startinglimitNumber).' av '.$resultAmount.' Böcker</span><div style="text-align: center;">';
+                        if($number_of_pages > 1){
+                            if($number_of_pages <= 5){
+                                for($page = 1; $page <=$number_of_pages; $page++){ 
+                                    if($currpage == $page){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?userspage=' .$page.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$page.'</button></a>';
+                                    }
+                            }else{
+                                $startPage = 1;
+                                $endPage = 5;
+                                $asfarRight = '<a style="margin: 0px 10px;" href="profile.php?userspage='.$number_of_pages.'"><button class="Buttons"> >> </button></a>';
+                                $asfarleft = '<a style="margin: 0px 10px;" href="profile.php?userspage=1" ><button class="Buttons"> << </button></a>';
+                                $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                $leftButon = '';
+                                while($currpage > $endPage){
+                                    $startPage += 5;
+                                    $endPage += 5;
+                                    $rightButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($endPage + 1).'"><button class="Buttons"> > </button></a>';
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                }
+                                if($currpage > $number_of_pages - 5){
+                                    $startPage = $number_of_pages - 4;
+                                    $endPage = $number_of_pages;
+                                    $leftButon = '<a style="margin: 0px 10px;" href="profile.php?userspage=' .($startPage - 1).'"><button class="Buttons"> < </button></a>';
+                                    $rightButon = '';
+                                }
+                                echo $asfarleft;
+                                echo $leftButon;
+                                for($i = $startPage; $i <= $endPage; $i++){ 
+                                    if($currpage == $i){
+                                        $isonCurrentPage = "border: 3px solid black;";
+                                    }else{ $isonCurrentPage = ""; }
+                                    echo '<a style="margin: 0px 10px;" href="profile.php?userspage=' .$i.'"><button class="Buttons" style="'.$isonCurrentPage.'">'.$i.'</button></a>';
+                                    }
+                                echo $rightButon;
+                                echo $asfarRight;
+                            }
+                        }
+                            echo '</div>
+                </div>';
+                    }
+                ?>
+            </div>
+
+
+        </div>
 
         <div class="FuntionBox" <?php if(isset($_GET['signupaddstatus']) || isset($_GET['signupupdatestatus']) || isset($_GET['userspage']) || isset($_GET['changedEmail']) || isset($_GET['sortTable']) && $_GET['sortTable'][0] == 0){echo 'style="display:grid;"';}?>>
             <form class="SingupForm" method="post" action="includes/users.inc.php">
@@ -335,7 +515,7 @@
                 </span>
                 <span style="grid-area: 7/1/8/3; justify-self:center; align-self:center">
                     <input type="submit" name="userAdd" class="Buttons scrolltobtns" value="Lägg till">
-                    <input style="display:none;" type="submit" name="userEdit" class="Buttons" value="Rediagre">
+                    <input style="display:none;" type="submit" name="userEdit" class="Buttons" value="Redigera">
                     <input style="display:none;" type="submit" name="userDelete" class="Buttons" value="Radera">
                 </span>
             </form>
@@ -616,32 +796,32 @@
             document.getElementsByName("Type")[1].checked = true;
         }
 
-        document.getElementsByClassName('SingupForm')[0].children[4].style.display = 'none';
-        document.getElementsByClassName('SingupForm')[0].children[4].children[1].required = false;
-        document.getElementsByClassName('SingupForm')[0].children[5].style.gridArea = '5/1/6/3';
-        document.getElementsByClassName('SingupForm')[0].children[6].style.gridArea = '6/1/7/3';
+        document.getElementsByClassName('SingupForm')[1].children[4].style.display = 'none';
+        document.getElementsByClassName('SingupForm')[1].children[4].children[1].required = false;
+        document.getElementsByClassName('SingupForm')[1].children[5].style.gridArea = '5/1/6/3';
+        document.getElementsByClassName('SingupForm')[1].children[6].style.gridArea = '6/1/7/3';
 
-        if (document.getElementsByClassName('SingupForm')[0].children[6].children.length < 4) {
+        if (document.getElementsByClassName('SingupForm')[1].children[6].children.length < 4) {
 
-            document.getElementsByClassName('SingupForm')[0].children[6].children[0].style.display = "none";
-            document.getElementsByClassName('SingupForm')[0].children[6].children[1].style.display = "inline";
-            document.getElementsByClassName('SingupForm')[0].children[6].children[2].style.display = "inline";
+            document.getElementsByClassName('SingupForm')[1].children[6].children[0].style.display = "none";
+            document.getElementsByClassName('SingupForm')[1].children[6].children[1].style.display = "inline";
+            document.getElementsByClassName('SingupForm')[1].children[6].children[2].style.display = "inline";
             var newBtn = document.createElement("SPAN");
             newBtn.innerHTML = "« lägg till";
             newBtn.setAttribute('class', 'Buttons');
             newBtn.setAttribute('onclick', 'ReverseRowValues()');
-            document.getElementsByClassName('SingupForm')[0].children[6].insertBefore(newBtn, document.getElementsByClassName('SingupForm')[0].children[6].children[0]);
+            document.getElementsByClassName('SingupForm')[1].children[6].insertBefore(newBtn, document.getElementsByClassName('SingupForm')[1].children[6].children[0]);
         }
 
-        if (document.getElementsByClassName('SingupForm')[0].children[4].style.display = 'none') {
-            if (document.getElementsByClassName('SingupForm')[0].children.length > 7) {
-                document.getElementsByClassName('SingupForm')[0].children[7].remove();
-                document.getElementsByClassName('SingupForm')[0].children[7].remove();
-                document.getElementsByClassName('SingupForm')[0].children[7].remove();
+        if (document.getElementsByClassName('SingupForm')[1].children[4].style.display = 'none') {
+            if (document.getElementsByClassName('SingupForm')[1].children.length > 7) {
+                document.getElementsByClassName('SingupForm')[1].children[7].remove();
+                document.getElementsByClassName('SingupForm')[1].children[7].remove();
+                document.getElementsByClassName('SingupForm')[1].children[7].remove();
             }
             var hiddenEmail = document.createElement("INPUT");
             hiddenEmail.setAttribute('class', 'INPUTS');
-            document.getElementsByClassName('SingupForm')[0].appendChild(hiddenEmail);
+            document.getElementsByClassName('SingupForm')[1].appendChild(hiddenEmail);
             hiddenEmail.value = event.target.parentElement.children[2].innerHTML;
             hiddenEmail.readOnly = true;
             hiddenEmail.hidden = true;
@@ -652,7 +832,7 @@
             passBtn.setAttribute('class', 'Buttons scrolltobtns');
             passBtn.setAttribute('type', 'button');
             passBtn.setAttribute('onclick', 'popupsubmitForm("' + document.getElementsByName("Email")[0].value + '")');
-            document.getElementsByClassName('SingupForm')[0].appendChild(passBtn);
+            document.getElementsByClassName('SingupForm')[1].appendChild(passBtn);
             passBtn.style.fontSize = '16px';
             passBtn.style.alignSelf = 'center';
 
@@ -661,11 +841,11 @@
             usernameBtn.setAttribute('class', 'Buttons scrolltobtns');
             usernameBtn.setAttribute('type', 'button');
             usernameBtn.setAttribute('onclick', 'popupsubmitForm("' + document.getElementsByName("Email")[0].value + '")');
-            document.getElementsByClassName('SingupForm')[0].appendChild(usernameBtn);
+            document.getElementsByClassName('SingupForm')[1].appendChild(usernameBtn);
             usernameBtn.style.fontSize = '16px';
             usernameBtn.style.alignSelf = 'center';
 
-            document.getElementsByClassName('SingupForm')[0].style.gridColumnGap = "10px";
+            document.getElementsByClassName('SingupForm')[1].style.gridColumnGap = "10px";
         }
     }
 
@@ -694,7 +874,7 @@
     }
 
     function SreachFilter(BoxNumber, PageNumber) {
-        var searchTxt = document.getElementsByClassName("tableSearchbox")[0];
+        var searchTxt = event.target;
         if (PageNumber == 0) {
             PageNumber = 1;
         }

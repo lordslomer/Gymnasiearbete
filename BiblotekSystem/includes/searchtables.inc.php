@@ -11,7 +11,7 @@
                         
                         if(!empty($searchq)){
                     
-                            $sql = "SELECT * FROM users WHERE UserID != 3 AND Fname LIKE '%$searchq%' OR UserID != 3 AND Lname LIKE '%$searchq%' OR UserID != 3 AND Email LIKE '%$searchq%' OR UserID != 3 AND Type LIKE '%$searchq%'";
+                            $sql = "SELECT * FROM users WHERE UserID != ".$_SESSION['UserID']." AND Fname LIKE '%$searchq%' OR UserID != ".$_SESSION['UserID']." AND Lname LIKE '%$searchq%' OR UserID != ".$_SESSION['UserID']." AND Email LIKE '%$searchq%' OR UserID != ".$_SESSION['UserID']." AND Type LIKE '%$searchq%'";
                             
                             $result = mysqli_query($con, $sql);
 
@@ -41,7 +41,7 @@
 
                             
 
-                            $sqlp = "SELECT * FROM users WHERE UserID != 3 AND Fname LIKE '%$searchq%' OR UserID != 3 AND Lname LIKE '%$searchq%' OR UserID != 3 AND Email LIKE '%$searchq%' OR UserID != 3 AND Type LIKE '%$searchq%' LIMIT ".$startinglimitNumber.",".$results_per_page;
+                            $sqlp = "SELECT * FROM users WHERE UserID != ".$_SESSION['UserID']." AND Fname LIKE '%$searchq%' OR UserID != ".$_SESSION['UserID']." AND Lname LIKE '%$searchq%' OR UserID != ".$_SESSION['UserID']." AND Email LIKE '%$searchq%' OR UserID != ".$_SESSION['UserID']." AND Type LIKE '%$searchq%' LIMIT ".$startinglimitNumber.",".$results_per_page;
 
                             $resultp = mysqli_query($con, $sqlp);
                             $resultAmountonpage = mysqli_num_rows($resultp);                             
